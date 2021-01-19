@@ -136,7 +136,11 @@ class KubeHelmClient:
                     "do helm template fail: namespace={namespace}, name={name}\n"
                     "parameters={parameters}\nvaluefile={valuefile}\nfiles={files}"
                 ).format(
-                    namespace=namespace, name=name, parameters=parameters, valuefile=valuefile, files=files,
+                    namespace=namespace,
+                    name=name,
+                    parameters=parameters,
+                    valuefile=valuefile,
+                    files=files,
                 )
             )
             raise e
@@ -190,7 +194,11 @@ class KubeHelmClient:
                     "do helm template fail: namespace={namespace}, name={name}\n"
                     "parameters={parameters}\nvaluefile={valuefile}\nfiles={files}"
                 ).format(
-                    namespace=namespace, name=name, parameters=parameters, valuefile=valuefile, files=files,
+                    namespace=namespace,
+                    name=name,
+                    parameters=parameters,
+                    valuefile=valuefile,
+                    files=files,
                 )
             )
             raise e
@@ -312,8 +320,7 @@ class KubeHelmClient:
         raise ValueError(max_retries)
 
     def _run_command(self, cmd_args):
-        """Run the helm command with wrapped exceptions
-        """
+        """Run the helm command with wrapped exceptions"""
         try:
             logger.info("Calling helm cmd, cmd: (%s)", " ".join(cmd_args))
 

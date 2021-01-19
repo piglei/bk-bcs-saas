@@ -83,8 +83,7 @@ def _polling_once(model, log):
 
 
 def delete_iam_cluster_resource(log):
-    """删除iam集群信息
-    """
+    """删除iam集群信息"""
     pass
 
 

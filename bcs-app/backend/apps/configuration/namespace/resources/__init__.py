@@ -22,7 +22,6 @@ from backend.bcs_k8s.app.models import App
 
 
 class Namespace:
-
     def __init__(self, access_token, project_id, project_kind):
         self.access_token = access_token
         self.project_id = project_id
@@ -54,4 +53,6 @@ class Namespace:
         return self.client.get_namespace(self.access_token, self.project_id, cluster_id)
 
     def create_imagepullsecret(self, project_code, cluster_id, namespace):
-        return self.client.create_imagepullsecret(self.access_token, self.project_id, project_code, cluster_id, namespace)
+        return self.client.create_imagepullsecret(
+            self.access_token, self.project_id, project_code, cluster_id, namespace
+        )

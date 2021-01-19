@@ -191,7 +191,13 @@ class Permission:
         return url
 
     def _make_request_with_resources(self, username, action_id, resources=None):
-        request = Request(settings.APP_ID, Subject("user", username), Action(action_id), resources, None,)
+        request = Request(
+            settings.APP_ID,
+            Subject("user", username),
+            Action(action_id),
+            resources,
+            None,
+        )
         return request
 
     def allowed_do_resource_type(self, username, action_id):

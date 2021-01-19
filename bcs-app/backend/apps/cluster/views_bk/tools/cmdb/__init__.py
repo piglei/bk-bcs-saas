@@ -17,7 +17,6 @@ from backend.utils.errcodes import ErrorCode
 
 
 class CMDBClient:
-
     def __init__(self, request):
         self.request = request
         self.cc_app_id = request.project.cc_app_id

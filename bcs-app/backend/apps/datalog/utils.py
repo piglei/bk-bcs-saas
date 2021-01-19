@@ -12,13 +12,15 @@
 # specific language governing permissions and limitations under the License.
 #
 from backend.apps.datalog.models import ProjectDataInfo
-from backend.apps.datalog.data_collect import (create_data_project, create_and_start_standard_data_flow,  # noqa
-                                               create_and_start_non_standard_data_flow)  # noqa
+from backend.apps.datalog.data_collect import (
+    create_data_project,
+    create_and_start_standard_data_flow,  # noqa
+    create_and_start_non_standard_data_flow,
+)  # noqa
 
 
 def get_data_id_by_project_id(project_id):
-    """获取项目标准日志采集的dataid
-    """
+    """获取项目标准日志采集的dataid"""
     try:
         project = ProjectDataInfo.objects.get(project_id=project_id)
     except Exception:
@@ -30,7 +32,7 @@ def get_data_id_by_project_id(project_id):
 
     return {
         'standard_data_id': standard_data_id if standard_data_id else 0,
-        'non_standard_data_id': non_standard_data_id if non_standard_data_id else 0
+        'non_standard_data_id': non_standard_data_id if non_standard_data_id else 0,
     }
 
 

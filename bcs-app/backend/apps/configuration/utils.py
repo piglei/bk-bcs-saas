@@ -50,14 +50,16 @@ def to_bcs_res_name(project_kind, origin_name):
 def get_all_template_info_by_project(project_id):
     # 获取项目下所有的模板信息
     # 暂时不支持YAML模板查询
-    temps = Template.objects.filter(project_id=project_id,
-                                    edit_mode=TemplateEditMode.PageForm.value).values('id', 'name')
+    temps = Template.objects.filter(project_id=project_id, edit_mode=TemplateEditMode.PageForm.value).values(
+        'id', 'name'
+    )
     tem_dict = {tem['id']: tem['name'] for tem in temps}
     tem_ids = tem_dict.keys()
 
     # 获取所有的可见版本
     show_vers = ShowVersion.objects.filter(template_id__in=tem_ids).values(
-        'id', 'real_version_id', 'name', 'template_id')
+        'id', 'real_version_id', 'name', 'template_id'
+    )
 
     resource_list = []
 
@@ -68,8 +70,7 @@ def get_all_template_info_by_project(project_id):
         template_name = tem_dict.get(template_id)
 
         # 每个版本的具体信息
-        versioned_entity = VersionedEntity.objects.get(
-            template_id=template_id, id=real_version_id)
+        versioned_entity = VersionedEntity.objects.get(template_id=template_id, id=real_version_id)
         entity = versioned_entity.get_entity()
         for category in entity:
             ids = entity.get(category)
@@ -77,25 +78,28 @@ def get_all_template_info_by_project(project_id):
             res_list = MODULE_DICT.get(category).objects.filter(id__in=id_list).values('id', 'name', 'config')
             for resource in res_list:
                 config = resource['config']
-                resource_list.append({
-                    'template_id': template_id,
-                    'template_name': template_name,
-                    'show_version_id': show_version_id,
-                    'show_version_name': _show['name'],
-                    'category': category,
-                    'category_name': CATE_SHOW_NAME.get(category, category),
-                    'resource_id': resource['id'],
-                    'resource_name': resource['name'],
-                    'config': config
-                })
+                resource_list.append(
+                    {
+                        'template_id': template_id,
+                        'template_name': template_name,
+                        'show_version_id': show_version_id,
+                        'show_version_name': _show['name'],
+                        'category': category,
+                        'category_name': CATE_SHOW_NAME.get(category, category),
+                        'resource_id': resource['id'],
+                        'resource_name': resource['name'],
+                        'config': config,
+                    }
+                )
     return resource_list
 
 
 # TODO refactor
 def get_all_template_config(project_id):
     # 暂时不支持YAML模板查询
-    tem_ids = Template.objects.filter(project_id=project_id,
-                                      edit_mode=TemplateEditMode.PageForm.value).values_list('id', flat=True)
+    tem_ids = Template.objects.filter(project_id=project_id, edit_mode=TemplateEditMode.PageForm.value).values_list(
+        'id', flat=True
+    )
     tem_ids = list(tem_ids)
     real_version_ids = ShowVersion.objects.filter(template_id__in=tem_ids).values_list('real_version_id', flat=True)
     real_version_ids = list(real_version_ids)
@@ -136,16 +140,13 @@ def get_all_template_config(project_id):
             count = category_id_count_dict.get(resource['id'])
             i = 0
             while i < count:
-                resource_list.append({
-                    'config': resource['config']
-                })
+                resource_list.append({'config': resource['config']})
                 i = i + 1
     return resource_list
 
 
 def check_var_by_config(config):
-    """获取配置文件中所有的变量
-    """
+    """获取配置文件中所有的变量"""
     search_list = KEY_PATTERN.findall(config)
     search_keys = set(search_list)
     for _key in search_keys:
@@ -181,7 +182,7 @@ def create_template(username, project_id, tpl_args):
         resource=tpl_args['name'],
         resource_id=template.id,
         extra=json.dumps(tpl_args),
-        description=_("创建模板集")
+        description=_("创建模板集"),
     ).log_add()
     return template
 
@@ -198,7 +199,7 @@ def update_template(username, template, tpl_args):
         resource=template.name,
         resource_id=template.id,
         extra=json.dumps(serializer.data),
-        description=_("更新模板集")
+        description=_("更新模板集"),
     ).log_modify()
     return template
 

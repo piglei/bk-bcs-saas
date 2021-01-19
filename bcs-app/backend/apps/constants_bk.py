@@ -45,7 +45,4 @@ class ProjectKind(ChoicesEnum):
     K8S = 1
     MESOS = 2
 
-    _choices_labels = (
-        (1, 'Kubernetes'),
-        (2, 'Mesos')
-    )
+    _choices_labels = ((1, 'Kubernetes'), (2, 'Mesos'))

@@ -75,7 +75,7 @@ class TemplatesView(APIView):
         kind = request.project.kind
         # 添加分页信息
         limit, offset = data["limit"], data["offset"]
-        templates = templates[offset: limit + offset]
+        templates = templates[offset : limit + offset]
 
         serializer = serializers_new.ListTemplateSLZ(templates, many=True, context={"kind": kind})
         template_list = serializer.data
@@ -203,8 +203,7 @@ class UpdateDestroyAppResourceView(APIView, TemplatePermission):
         return data
 
     def put(self, request, project_id, version_id, resource_name, resource_id):
-        """模板集中有 version 信息时，从 version 版本创建新的版本信息
-        """
+        """模板集中有 version 信息时，从 version 版本创建新的版本信息"""
         validate_resource_name(resource_name)
 
         serializer = serializers_new.VentityWithTemplateSLZ(data=self.kwargs)
@@ -431,8 +430,7 @@ class SingleTempalteView(generics.RetrieveUpdateDestroyAPIView):
 
     @transaction.atomic
     def put(self, request, project_id, pk):
-        """复制模板
-        """
+        """复制模板"""
         self.request = request
         # 验证用户是否使用权限
         template = validate_template_id(project_id, pk, is_return_tempalte=True)
@@ -475,6 +473,6 @@ class SingleTempalteView(generics.RetrieveUpdateDestroyAPIView):
             {
                 "code": 0,
                 "message": "OK",
-                "data": {"template_id": template_id, "version_id": version_id, "show_version_id": show_version_id}
+                "data": {"template_id": template_id, "version_id": version_id, "show_version_id": show_version_id},
             }
         )

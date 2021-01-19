@@ -18,10 +18,14 @@ SUPPORTED_HEALTH_CHECKS = ['HTTP', 'REMOTE_HTTP', 'TCP', 'REMOTE_TCP', 'COMMAND'
 
 
 class Pod(BCSResource):
-
     def _health_checks_params_to_int(self, health_check, metadata_name, is_preview, is_validate):
-        common_check_params = ['delaySeconds', 'intervalSeconds', 'timeoutSeconds', 'consecutiveFailures',
-                               'gracePeriodSeconds']
+        common_check_params = [
+            'delaySeconds',
+            'intervalSeconds',
+            'timeoutSeconds',
+            'consecutiveFailures',
+            'gracePeriodSeconds',
+        ]
         for p in common_check_params:
             health_check[p] = utils.handle_number_var(
                 health_check[p], f'Application[{metadata_name}]{p}', is_preview, is_validate

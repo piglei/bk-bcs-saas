@@ -47,10 +47,7 @@ class Repository(BaseTSModel):
         db_table = 'helm_repository'
 
     def __str__(self):
-        return "[{id}]{project}/{name}".format(
-            id=self.id,
-            project=self.project_id,
-            name=self.name)
+        return "[{id}]{project}/{name}".format(id=self.id, project=self.project_id, name=self.name)
 
     def refreshed(self, commit):
         self.refreshed_at = timezone.now()
@@ -60,17 +57,18 @@ class Repository(BaseTSModel):
     @property
     def plain_auths(self):
         auths = list(self.auths.values("credentials", "type", "role"))
-        return [{
-            "type": auth["type"],
-            "role": auth["role"],
-            "credentials": json.loads(auth["credentials"]),
-        } for auth in auths]
+        return [
+            {
+                "type": auth["type"],
+                "role": auth["role"],
+                "credentials": json.loads(auth["credentials"]),
+            }
+            for auth in auths
+        ]
 
 
 class RepositoryAuth(models.Model):
-    AUTH_CHOICE = (
-        ("BASIC", "BasicAuth"),
-    )
+    AUTH_CHOICE = (("BASIC", "BasicAuth"),)
 
     type = models.CharField('Type', choices=AUTH_CHOICE, max_length=16)
     # ex: {"password":"EJWmMqqGeA5E6JNb","username":"admin-T49e"}

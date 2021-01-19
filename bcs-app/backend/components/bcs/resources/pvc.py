@@ -25,7 +25,6 @@ logger = logging.getLogger(__name__)
 
 
 class PersistentVolumeClaim(Resource, CoreAPIClassMixins):
-
     @response(format_data=False)
     def list_pvc(self):
         resp = self.api_instance.list_persistent_volume_claim_for_all_namespaces(_preload_content=False)

@@ -30,7 +30,8 @@ class Secret(Resource, CoreAPIClassMixins):
         secret_list = []
         for info in resp.items:
             item = self.render_resource_for_preload_content(
-                self.resource_kind, info, info.metadata.name, info.metadata.namespace)
+                self.resource_kind, info, info.metadata.name, info.metadata.namespace
+            )
             params_name = params.get('name')
             if params_name:
                 if info.metadata.name == params_name:
@@ -45,7 +46,8 @@ class Secret(Resource, CoreAPIClassMixins):
         resp = self.api_instance.list_secret_for_all_namespaces()
         for info in resp.items:
             item = self.render_resource_for_preload_content(
-                'Secret', info, info.metadata.name, info.metadata.namespace)
+                'Secret', info, info.metadata.name, info.metadata.namespace
+            )
             secret_list.append(item)
         return secret_list
 

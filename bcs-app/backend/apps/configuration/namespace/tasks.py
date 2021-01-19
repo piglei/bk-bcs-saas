@@ -55,10 +55,7 @@ def get_cluster_namespace_map(access_token, project_id):
 
 
 def create_cc_namespace(access_token, project_id, cluster_id, namespace, creator):
-    resp = paas_cc.create_namespace(
-        access_token, project_id, cluster_id,
-        namespace, None, creator, 'prod', True
-    )
+    resp = paas_cc.create_namespace(access_token, project_id, cluster_id, namespace, None, creator, 'prod', True)
     if resp.get('code') != ErrorCode.NoError:
         raise error_codes.APIError(f'create namespace error, {resp.get("message")}')
     return resp['data']
@@ -81,16 +78,12 @@ def delete_auth(request, project_id, ns_id):
 
 
 def compose_request(access_token, username):
-    """组装request，以便于使用auth api时使用
-    """
-    return FancyDict({
-        'user': FancyDict({
-            'username': username,
-            'token': FancyDict({
-                'access_token': access_token
-            })
-        }),
-    })
+    """组装request，以便于使用auth api时使用"""
+    return FancyDict(
+        {
+            'user': FancyDict({'username': username, 'token': FancyDict({'access_token': access_token})}),
+        }
+    )
 
 
 @shared_task

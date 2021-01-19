@@ -30,9 +30,20 @@ from backend.resources.namespace.utils import get_namespaces
 logger = logging.getLogger(__name__)
 
 RE_KEY = re.compile(r'^%s{0,63}$' % VARIABLE_PATTERN)
-SYS_KEYS = ['SYS_BCS_ZK', 'SYS_CC_ZK', 'SYS_BCSGROUP',
-            'SYS_TEMPLATE_ID', 'SYS_VERSION_ID', 'SYS_VERSION', 'SYS_INSTANCE_ID', 'SYS_CREATOR',
-            'SYS_UPDATOR', 'SYS_OPERATOR', 'SYS_CREATE_TIME', 'SYS_UPDATE_TIME']
+SYS_KEYS = [
+    'SYS_BCS_ZK',
+    'SYS_CC_ZK',
+    'SYS_BCSGROUP',
+    'SYS_TEMPLATE_ID',
+    'SYS_VERSION_ID',
+    'SYS_VERSION',
+    'SYS_INSTANCE_ID',
+    'SYS_CREATOR',
+    'SYS_UPDATOR',
+    'SYS_OPERATOR',
+    'SYS_CREATE_TIME',
+    'SYS_UPDATE_TIME',
+]
 
 
 class SearchVariableSLZ(serializers.Serializer):
@@ -53,8 +64,22 @@ class ListVariableSLZ(serializers.ModelSerializer):
     class Meta:
         model = Variable
         fields = (
-            'id', 'name', 'key', 'default', 'default_value', 'desc', 'category', 'category_name', 'scope',
-            'scope_name', 'quote_num', 'creator', 'created', 'updated', 'updator')
+            'id',
+            'name',
+            'key',
+            'default',
+            'default_value',
+            'desc',
+            'category',
+            'category_name',
+            'scope',
+            'scope_name',
+            'quote_num',
+            'creator',
+            'created',
+            'updated',
+            'updator',
+        )
 
     def get_quote_num(self, obj):
         search_type = self.context['search_type']
@@ -76,12 +101,7 @@ class VariableSLZ(serializers.ModelSerializer):
     scope = serializers.ChoiceField(choices=VariableScope.get_choices(), required=True)
     name = serializers.CharField(max_length=256, required=True)
     key = serializers.RegexField(
-        RE_KEY,
-        max_length=64,
-        required=True,
-        error_messages={
-            'invalid': _("KEY 只能包含字母、数字和下划线，且以字母开头，最大长度为64个字符")
-        }
+        RE_KEY, max_length=64, required=True, error_messages={'invalid': _("KEY 只能包含字母、数字和下划线，且以字母开头，最大长度为64个字符")}
     )
     default = serializers.JSONField(required=False)
     desc = serializers.CharField(max_length=256, required=False, allow_blank=True)
@@ -114,9 +134,7 @@ class CreateVariableSLZ(VariableSLZ):
     def create(self, validated_data):
         exists = Variable.objects.filter(key=validated_data['key'], project_id=validated_data['project_id']).exists()
         if exists:
-            detail = {
-                'field': ['{}KEY{}{}'.format(_("变量"), validated_data['key'], _("已经存在"))]
-            }
+            detail = {'field': ['{}KEY{}{}'.format(_("变量"), validated_data['key'], _("已经存在"))]}
             raise ValidationError(detail=detail)
 
         variable = Variable.objects.create(**validated_data)
@@ -136,9 +154,7 @@ class UpdateVariableSLZ(VariableSLZ):
                 raise ValidationError('KEY{}{}'.format(old_key, _("已经被引用，不能修改KEY")))
 
             if Variable.objects.filter(key=new_key, project_id=validated_data['project_id']).exists():
-                detail = {
-                    'field': ['{}KEY{}{}'.format(_("变量"), validated_data['key'], _("已经存在"))]
-                }
+                detail = {'field': ['{}KEY{}{}'.format(_("变量"), validated_data['key'], _("已经存在"))]}
                 raise ValidationError(detail=detail)
 
         instance.key = new_key
@@ -178,12 +194,7 @@ class NsVariableSLZ(serializers.Serializer):
 class VariableItemSLZ(serializers.Serializer):
     name = serializers.CharField(max_length=256, required=True)
     key = serializers.RegexField(
-        RE_KEY,
-        max_length=64,
-        required=True,
-        error_messages={
-            'invalid': _("KEY 只能包含字母、数字和下划线，且以字母开头，最大长度为64个字符")
-        }
+        RE_KEY, max_length=64, required=True, error_messages={'invalid': _("KEY 只能包含字母、数字和下划线，且以字母开头，最大长度为64个字符")}
     )
     value = serializers.CharField(required=True)
     desc = serializers.CharField(default='')

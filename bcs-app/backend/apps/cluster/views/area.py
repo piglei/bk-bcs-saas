@@ -28,8 +28,7 @@ class AreaListViewSet(viewsets.ViewSet):
     renderer_classes = (BKAPIRenderer, BrowsableAPIRenderer)
 
     def list(self, request, project_id):
-        """get the area list
-        """
+        """get the area list"""
         return Response(get_areas(request))
 
 
@@ -37,8 +36,7 @@ class AreaInfoViewSet(viewsets.ViewSet):
     renderer_classes = (BKAPIRenderer, BrowsableAPIRenderer)
 
     def info(self, request, area_id):
-        """get the area info
-        """
+        """get the area info"""
         resp = paas_cc.get_area_info(request.user.token.access_token, area_id)
         if resp.get('code') != ErrorCode.NoError:
             raise error_codes.APIError(f'request bcs cc area info api error, {resp.get("message")}')

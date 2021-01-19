@@ -25,11 +25,7 @@ def destroy_app(app_id, access_token, username):
 
 @shared_task
 def rollback_app(app_id, access_token, username, release_id):
-    App.objects.get(id=app_id).rollback_app_task(
-        username=username,
-        access_token=access_token,
-        release_id=release_id
-    )
+    App.objects.get(id=app_id).rollback_app_task(username=username, access_token=access_token, release_id=release_id)
 
 
 @shared_task

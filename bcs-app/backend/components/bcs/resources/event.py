@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 
 
 class Event(Resource, CoreAPIClassMixins):
-
     def get_res_name_list(self, params):
         res_name_list = params.get('extraInfo.name', '')
         if isinstance(res_name_list, str):
@@ -54,7 +53,7 @@ class Event(Resource, CoreAPIClassMixins):
                 'level': info['type'],
                 'eventTime': info['metadata']['creationTimestamp'],
                 'compoent': info['source']['component'],
-                'env': 'k8s'
+                'env': 'k8s',
             }
             event_list.append(item)
         return {'code': 0, 'data': event_list, 'count': len(event_list)}

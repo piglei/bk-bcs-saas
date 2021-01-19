@@ -82,21 +82,15 @@ def create_dept_account(access_token, project_id, project_code, cluster_id):
 
 
 def create_imagepullsecret(access_token, project_id, project_code, cluster_id, namespace):
-    """先和先前逻辑保持一致
-    """
+    """先和先前逻辑保持一致"""
     dept_auth = {'auths': create_dept_account(access_token, project_id, project_code, cluster_id)}
     auth_bytes = bytes(json.dumps(dept_auth), 'utf-8')
     secret_config = {
         "apiVersion": "v1",
         "kind": "Secret",
-        "metadata": {
-            "name": f"{K8S_IMAGE_SECRET_PRFIX}{namespace}",
-            "namespace": namespace
-        },
-        "data": {
-            ".dockerconfigjson": base64.b64encode(auth_bytes).decode()
-        },
-        "type": "kubernetes.io/dockerconfigjson"
+        "metadata": {"name": f"{K8S_IMAGE_SECRET_PRFIX}{namespace}", "namespace": namespace},
+        "data": {".dockerconfigjson": base64.b64encode(auth_bytes).decode()},
+        "type": "kubernetes.io/dockerconfigjson",
     }
     #
     client = K8SClient(access_token, project_id, cluster_id, env=None)

@@ -27,6 +27,7 @@ class UserInfoViewSet(APIView):
     """
     用户信息相关
     """
+
     renderer_classes = (BKAPIRenderer, BrowsableAPIRenderer)
 
     def get(self, request):

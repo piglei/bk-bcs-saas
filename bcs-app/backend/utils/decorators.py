@@ -44,8 +44,7 @@ MOSAIC_WORD = MOSAIC_CHAR * 3
 
 
 def get_desensitive_url(request, params):
-    """获取脱敏URL
-    """
+    """获取脱敏URL"""
     if not (isinstance(params, dict) and params):
         return request.url
 
@@ -62,8 +61,7 @@ def get_desensitive_url(request, params):
 
 
 def requests_curl_log(resp, st, params):
-    """记录requests curl log
-    """
+    """记录requests curl log"""
     if not isinstance(resp, Response):
         raise ValueError(_("返回值[{}]必须是Respose对象").format(resp))
 
@@ -107,8 +105,7 @@ def requests_curl_log(resp, st, params):
 
 
 def response(f=None, handle_resp=False):
-    """返回值格式化handle_resp
-    """
+    """返回值格式化handle_resp"""
 
     def decorator(func):
         @wraps(func)
@@ -170,8 +167,7 @@ def parse_response_data(default_data=None, err_msg_prefix=None):
 
 
 def handle_api_not_implemented(keyword, module):
-    """处理mesos API 为上线, 返回404 page not found的情况
-    """
+    """处理mesos API 为上线, 返回404 page not found的情况"""
 
     def decorate(func):
         @wraps(func)

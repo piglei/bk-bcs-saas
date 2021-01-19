@@ -34,8 +34,7 @@ def validate_k8s_res_name(name):
 
 
 def validate_pod_selector(config):
-    """检查 selector 是否在label中
-    """
+    """检查 selector 是否在label中"""
     spec = config.get('spec', {})
     selector_labels = getitems(spec, ['selector', 'matchLabels'])
     if selector_labels:

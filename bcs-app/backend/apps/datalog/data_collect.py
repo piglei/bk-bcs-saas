@@ -132,8 +132,7 @@ def _create_and_start_data_flow(username, project_id, cc_biz_id, data_type):
 
 
 def create_prometheus_data_flow(username, project_id, cc_app_id, english_name, dataset):
-    """prometheus 类型的Metric申请数据平台的dataid，并配置默认的清洗入库规则
-    """
+    """prometheus 类型的Metric申请数据平台的dataid，并配置默认的清洗入库规则"""
     return True, _("数据平台功能暂未开启")
 
 

@@ -30,8 +30,7 @@ CSMI_PREFIX_PATH = "api/c/compapi/cmsi"
 
 
 def common_base_request(url, data):
-    """请求
-    """
+    """请求"""
     data.update({"bk_app_code": settings.APP_ID, "bk_app_secret": settings.APP_TOKEN, "bk_username": "100"})
     resp = http_post(url, json=data)
     if not resp.get("result"):

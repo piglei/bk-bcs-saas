@@ -65,7 +65,7 @@ def scan_yaml_specs(data, atEOF):
 def split_spec(token):
     i = token.find("\n")
     if i >= 0:
-        return token[0:i], token[i + 1:]
+        return token[0:i], token[i + 1 :]
 
     return "", ""
 

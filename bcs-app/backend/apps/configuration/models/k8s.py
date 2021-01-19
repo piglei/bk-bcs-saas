@@ -233,8 +233,7 @@ class K8sService(K8sResource, ResourceMixin):
         return config.get("spec", {}).get("selector")
 
     def is_headless_service(self):
-        """spec.clusterIP 为 "None"
-        """
+        """spec.clusterIP 为 "None" """
         config = self.get_config() or {}
         cluster_ip = config.get("spec", {}).get("clusterIP", "")
         if cluster_ip == "None":

@@ -23,7 +23,7 @@ reference <https://github.com/databus23/helm-diff/blob/master/cmd/revision.go>
 
 
 class AppRevisionDiffer:
-    """ get difference of two release
+    """get difference of two release
     suppressed_kinds:  allows suppression of the values listed in the diff output
     output_context: output NUM lines of context around changes
     """
@@ -62,6 +62,7 @@ class AppRevisionDiffer:
             parser.parse(revision2_content, self.app.namespace),
             self.suppressed_kinds,
             self.output_context,
-            output)
+            output,
+        )
 
         return output.getvalue()

@@ -19,8 +19,7 @@ import contextlib
 
 @contextlib.contextmanager
 def save_to_temporary_dir(files):
-    """
-    """
+    """"""
     with tempfile.TemporaryDirectory() as tempdir:
         for filename, content in files.items():
             filename = "%s.yaml" % filename

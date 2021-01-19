@@ -25,12 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def make_matcher_configs(matcher_cls, kinds):
-    return [{
-        "type": matcher_cls,
-        "parameters": {
-            "kind": kind
-        }
-    } for kind in kinds]
+    return [{"type": matcher_cls, "parameters": {"kind": kind}} for kind in kinds]
 
 
 def make_kind_matcher_configs(kinds):
@@ -75,17 +70,25 @@ def join_manifest(resources_list):
     return yaml_seperator.decode().join(resources_list)
 
 
-def inject_configs(access_token, project_id, cluster_id, namespace_id, namespace,
-                   creator, updator, created_at, updated_at, version, ignore_empty_access_token=False,
-                   extra_inject_source=None, source_type='helm'):
+def inject_configs(
+    access_token,
+    project_id,
+    cluster_id,
+    namespace_id,
+    namespace,
+    creator,
+    updator,
+    created_at,
+    updated_at,
+    version,
+    ignore_empty_access_token=False,
+    extra_inject_source=None,
+    source_type='helm',
+):
     if extra_inject_source is None:
         extra_inject_source = dict()
 
-    context = {
-        "creator": creator,
-        "updator": updator,
-        "version": version
-    }
+    context = {"creator": creator, "updator": updator, "version": version}
     context.update(extra_inject_source)
 
     provider = BcsInfoProvider(
@@ -95,7 +98,7 @@ def inject_configs(access_token, project_id, cluster_id, namespace_id, namespace
         namespace_id=namespace_id,
         namespace=namespace,
         context=context,
-        ignore_empty_access_token=True
+        ignore_empty_access_token=True,
     )
 
     bcs_annotations = provider.provide_annotations(source_type)
@@ -105,70 +108,89 @@ def inject_configs(access_token, project_id, cluster_id, namespace_id, namespace
     bcs_labels = provider.provide_labels(source_type)
     bcs_labels = {"labels": bcs_labels}
 
-    bcs_pod_labels = {
-        "labels": provider.provide_pod_labels(source_type)
-    }
+    bcs_pod_labels = {"labels": provider.provide_pod_labels(source_type)}
     # Some pod may has no env config, so we shouldn't add `env` to path,
     # Add it to be injected data, make sure it will merge to pod's env anyway.
     bcs_env = {"env": provider.provide_container_env()}
     bcs_image_secrets = provider.provide_image_pull_secrets()
 
-    configs = [{
-        # annotations
-        "matchers": make_re_kind_matcher_configs([".+"]),
-        "paths": ["/metadata"],
-        "data": bcs_annotations,
-        "force_str": True
-    }, {
-        # pod labels
-        "matchers": make_re_kind_matcher_configs([".+"]),
-        "paths": ["/metadata"],
-        "data": bcs_labels,
-        "force_str": True
-    }, {
-        # pod labels
-        "matchers": make_kind_matcher_configs(["Deployment", "StatefulSet", "DaemonSet", "ReplicaSet", "Job"]),
-        "paths": ["/spec/template/metadata"],
-        "data": bcs_pod_labels,
-        "force_str": True
-    }, {
-        # pod env
-        "matchers": make_kind_matcher_configs(["Pod"]),
-        "paths": ["/spec/containers/*"],
-        "data": bcs_env,
-        "force_str": True
-    }, {
-        # pod env
-        "matchers": make_kind_matcher_configs(["Deployment", "StatefulSet", "DaemonSet", "ReplicaSet", "Job"]),
-        "paths": ["/spec/template/spec/containers/*"],
-        "data": bcs_env,
-        "force_str": True
-    }, {
-        # pod secrets
-        "matchers": make_kind_matcher_configs(["Deployment", "StatefulSet", "DaemonSet", "ReplicaSet", "Job"]),
-        "paths": ["/spec/template/spec"],
-        "data": bcs_image_secrets,
-        "force_str": True
-    }, {
-        # pod secrets
-        "matchers": make_kind_matcher_configs(["CronJob"]),
-        "paths": ["/spec/jobTemplate/spec/template/spec"],
-        "data": bcs_image_secrets,
-        "force_str": True
-    }, {
-        # pod secrets
-        "matchers": make_kind_matcher_configs(["Pod"]),
-        "paths": ["/spec"],
-        "data": bcs_image_secrets,
-        "force_str": True
-    }]
+    configs = [
+        {
+            # annotations
+            "matchers": make_re_kind_matcher_configs([".+"]),
+            "paths": ["/metadata"],
+            "data": bcs_annotations,
+            "force_str": True,
+        },
+        {
+            # pod labels
+            "matchers": make_re_kind_matcher_configs([".+"]),
+            "paths": ["/metadata"],
+            "data": bcs_labels,
+            "force_str": True,
+        },
+        {
+            # pod labels
+            "matchers": make_kind_matcher_configs(["Deployment", "StatefulSet", "DaemonSet", "ReplicaSet", "Job"]),
+            "paths": ["/spec/template/metadata"],
+            "data": bcs_pod_labels,
+            "force_str": True,
+        },
+        {
+            # pod env
+            "matchers": make_kind_matcher_configs(["Pod"]),
+            "paths": ["/spec/containers/*"],
+            "data": bcs_env,
+            "force_str": True,
+        },
+        {
+            # pod env
+            "matchers": make_kind_matcher_configs(["Deployment", "StatefulSet", "DaemonSet", "ReplicaSet", "Job"]),
+            "paths": ["/spec/template/spec/containers/*"],
+            "data": bcs_env,
+            "force_str": True,
+        },
+        {
+            # pod secrets
+            "matchers": make_kind_matcher_configs(["Deployment", "StatefulSet", "DaemonSet", "ReplicaSet", "Job"]),
+            "paths": ["/spec/template/spec"],
+            "data": bcs_image_secrets,
+            "force_str": True,
+        },
+        {
+            # pod secrets
+            "matchers": make_kind_matcher_configs(["CronJob"]),
+            "paths": ["/spec/jobTemplate/spec/template/spec"],
+            "data": bcs_image_secrets,
+            "force_str": True,
+        },
+        {
+            # pod secrets
+            "matchers": make_kind_matcher_configs(["Pod"]),
+            "paths": ["/spec"],
+            "data": bcs_image_secrets,
+            "force_str": True,
+        },
+    ]
 
     return configs
 
 
-def inject_bcs_info(access_token, project_id, cluster_id, namespace_id, namespace, creator,
-                    updator, created_at, updated_at, resources, version, ignore_empty_access_token=False,
-                    extra_inject_source=None):
+def inject_bcs_info(
+    access_token,
+    project_id,
+    cluster_id,
+    namespace_id,
+    namespace,
+    creator,
+    updator,
+    created_at,
+    updated_at,
+    resources,
+    version,
+    ignore_empty_access_token=False,
+    extra_inject_source=None,
+):
     configs = inject_configs(
         access_token=access_token,
         project_id=project_id,
@@ -181,19 +203,11 @@ def inject_bcs_info(access_token, project_id, cluster_id, namespace_id, namespac
         updated_at=updated_at,
         version=version,
         ignore_empty_access_token=ignore_empty_access_token,
-        extra_inject_source=extra_inject_source
+        extra_inject_source=extra_inject_source,
     )
     resources_list = parse_manifest(resources)
-    context = {
-        "creator": creator,
-        "updator": updator,
-        "version": version
-    }
-    manager = InjectManager(
-        configs=configs,
-        resources=resources_list,
-        context=context
-    )
+    context = {"creator": creator, "updator": updator, "version": version}
+    manager = InjectManager(configs=configs, resources=resources_list, context=context)
     resources_list = manager.do_inject()
     content = join_manifest(resources_list)
     return content

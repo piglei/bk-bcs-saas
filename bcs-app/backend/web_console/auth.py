@@ -24,8 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 def authenticated(view_func):
-    """权限认证装饰器
-    """
+    """权限认证装饰器"""
 
     @wraps(view_func)
     def _wrapped_view(self, *args, **kwargs):

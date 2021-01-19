@@ -40,7 +40,7 @@ class TokenManager(models.Manager):
             username=user.username,
             config=configuration,
             description=description,
-            maintainers=maintainers
+            maintainers=maintainers,
         )
         return token
 

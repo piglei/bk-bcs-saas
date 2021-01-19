@@ -55,22 +55,17 @@ class NginxIngressBase(viewsets.ModelViewSet):
                 name=K8S_LB_CHART_NAME,
                 chart__repository__project_id=project_id,
                 version=version,
-                chart__repository__name="public-repo"
+                chart__repository__name="public-repo",
             )
         except ChartVersion.DoesNotExist:
             raise error_codes.ResNotFoundError(_("没有查询到chart版本: {}").format(version))
         return chart_version
 
     def create_node_label_via_bcs(self, request, project_id, cluster_id, node_id_labels={}):
-        """调用BCS服务创建节点标签
-        """
+        """调用BCS服务创建节点标签"""
         nodes = cluster_utils.get_cluster_nodes(request.user.token.access_token, project_id, cluster_id)
         # compose id: ip
-        node_id_ip = {
-            info["id"]: info["inner_ip"]
-            for info in nodes
-            if str(info["id"]) in node_id_labels.keys()
-        }
+        node_id_ip = {info["id"]: info["inner_ip"] for info in nodes if str(info["id"]) in node_id_labels.keys()}
         client = K8SClient(request.user.token.access_token, project_id, cluster_id, None)
         for node_id, ip in node_id_ip.items():
             k8s_resp = client.get_node_detail(ip)
@@ -88,14 +83,11 @@ class NginxIngressBase(viewsets.ModelViewSet):
                 raise error_codes.APIError(_("节点打标签异常,请联系管理员处理!"))
 
     def node_label(self, request, data, with_bcs=True):
-        """节点打标签
-        """
+        """节点打标签"""
         many_data = []
         ip_info = json.loads(data["ip_info"])
         node_id_labels = {}
-        existed_node_label_info = NodeLabel.objects.filter(
-            node_id__in=[node_id for node_id in ip_info]
-        )
+        existed_node_label_info = NodeLabel.objects.filter(node_id__in=[node_id for node_id in ip_info])
         existed_node_id_list = [info.node_id for info in existed_node_label_info]
         for node_id in ip_info:
             node_id_labels[node_id] = K8S_LB_LABEL
@@ -107,14 +99,13 @@ class NginxIngressBase(viewsets.ModelViewSet):
                 "node_id": node_id,
                 "labels": json.dumps(K8S_LB_LABEL),
                 "creator": data["creator"],
-                "updator": data["updator"]
+                "updator": data["updator"],
             }
             many_data.append(item)
             node_id_labels[node_id] = "add"
         # create node label via bcs
         if with_bcs:
-            self.create_node_label_via_bcs(
-                request, data["project_id"], data["cluster_id"], node_id_labels)
+            self.create_node_label_via_bcs(request, data["project_id"], data["cluster_id"], node_id_labels)
 
         serializer = NodeLabelSLZ(data=many_data, many=True)
         serializer.is_valid(raise_exception=True)
@@ -182,19 +173,18 @@ class NginxIngressListCreateViewSet(NginxIngressBase, HelmReleaseMixin):
             lb["environment"] = cluster_id_name_map.get(lb["cluster_id"], {}).get("environment")
             self._set_lb_namespace(lb, ns_id_name)
             release = self.get_helm_release(
-                cluster_id, K8S_LB_CHART_NAME, namespace_id=lb["namespace_id"], namespace=lb["namespace"])
+                cluster_id, K8S_LB_CHART_NAME, namespace_id=lb["namespace_id"], namespace=lb["namespace"]
+            )
             lb["chart"] = {"name": K8S_LB_CHART_NAME, "version": release.get_current_version() if release else ""}
             results.append(lb)
         # TODO: 后续添加权限相关
-        resp = {
-            "count": len(results),
-            "results": results
-        }
+        resp = {"count": len(results), "results": results}
         return Response(resp)
 
     def create_lb_conf(self, data):
         if K8SLoadBlance.objects.filter(
-                cluster_id=data["cluster_id"], namespace_id=data["namespace_id"], name=data["name"]):
+            cluster_id=data["cluster_id"], namespace_id=data["namespace_id"], name=data["name"]
+        ):
             return
         serializer = NginxIngressSLZ(data=data)
         serializer.is_valid(raise_exception=True)
@@ -202,8 +192,7 @@ class NginxIngressListCreateViewSet(NginxIngressBase, HelmReleaseMixin):
         serializer.save()
 
     def get_or_create_namespace(self, request, project_id, cluster_id):
-        """创建bcs-system命名空间，如果不存在，则创建；如果存在，则直接返回数据
-        """
+        """创建bcs-system命名空间，如果不存在，则创建；如果存在，则直接返回数据"""
         ns_client = namespace.Namespace(request.user.token.access_token, project_id, cluster_id)
         ns_info = ns_client.get_namespace(K8S_LB_NAMESPACE)
         if not ns_info:
@@ -223,8 +212,7 @@ class NginxIngressListCreateViewSet(NginxIngressBase, HelmReleaseMixin):
         return {"ns_info": ns_info}
 
     def validate_lb(self, cluster_id):
-        """校验集群下是否有LB，如果已经存在，现阶段不允许再次创建
-        """
+        """校验集群下是否有LB，如果已经存在，现阶段不允许再次创建"""
         if K8SLoadBlance.objects.filter(cluster_id=cluster_id, name=K8S_LB_CHART_NAME).exists():
             raise ValidationError(_("集群下已存在LB，不允许再次创建"))
 
@@ -238,13 +226,15 @@ class NginxIngressListCreateViewSet(NginxIngressBase, HelmReleaseMixin):
         slz = serializers.CreateK8SLoadBalancerSLZ(data=request.data)
         slz.is_valid(raise_exception=True)
         data = slz.validated_data
-        data.update({
-            "project_id": project_id,
-            "creator": request.user.username,
-            "updator": request.user.username,
-            "name": K8S_LB_CHART_NAME,
-            "ip_info": json.dumps(data["ip_info"])
-        })
+        data.update(
+            {
+                "project_id": project_id,
+                "creator": request.user.username,
+                "updator": request.user.username,
+                "name": K8S_LB_CHART_NAME,
+                "ip_info": json.dumps(data["ip_info"]),
+            }
+        )
         # 检查命名空间是否被占用
         self.validate_lb(data["cluster_id"])
 
@@ -256,7 +246,7 @@ class NginxIngressListCreateViewSet(NginxIngressBase, HelmReleaseMixin):
             user=request.user.username,
             resource_type='lb',
             resource="%s:%s" % (data["cluster_id"], data["namespace_id"]),
-            extra=json.dumps(data)
+            extra=json.dumps(data),
         )
         # 4. helm apply
         try:
@@ -276,7 +266,7 @@ class NginxIngressListCreateViewSet(NginxIngressBase, HelmReleaseMixin):
                 valuefile=data["values_content"],
                 creator=request.user.username,
                 updator=request.user.username,
-                sys_variables=sys_variables
+                sys_variables=sys_variables,
             )
         except Exception as err:
             logger.exception('Create helm app error, detail: %s' % err)
@@ -307,10 +297,7 @@ class NginxIngressRetrieveUpdateViewSet(NginxIngressBase, HelmReleaseMixin):
         release = self.get_helm_release(cluster_id, K8S_LB_CHART_NAME, namespace_id=namespace_id, namespace=namespace)
         if not release:
             return {}
-        return {
-            "version": release.get_current_version(),
-            "values_content": release.get_valuefile()
-        }
+        return {"version": release.get_current_version(), "values_content": release.get_valuefile()}
 
     def retrieve(self, request, project_id, pk):
         details = self.queryset.filter(id=pk, project_id=project_id, is_deleted=False).values()
@@ -325,39 +312,31 @@ class NginxIngressRetrieveUpdateViewSet(NginxIngressBase, HelmReleaseMixin):
         nodes_id_ip = self.get_nodes_id_ip(access_token, project_id, data["cluster_id"])
         render_ip_info = []
         for node_id in ip_info:
-            item = {
-                "id": node_id,
-                "inner_ip": nodes_id_ip[int(node_id)]["inner_ip"],
-                "unshared": ip_info[node_id]
-            }
+            item = {"id": node_id, "inner_ip": nodes_id_ip[int(node_id)]["inner_ip"], "unshared": ip_info[node_id]}
             render_ip_info.append(item)
         data["ip_info"] = json.dumps(render_ip_info)
 
         # 添加release对应的版本及values内容
-        data.update(self.get_release_info(
-            project_id, data["cluster_id"], namespace_id=data["namespace_id"], namespace=data["namespace"])
+        data.update(
+            self.get_release_info(
+                project_id, data["cluster_id"], namespace_id=data["namespace_id"], namespace=data["namespace"]
+            )
         )
         return Response(data)
 
     def get_update_node_info(self, request, data):
-        """比较先前和现在节点的获取要添加和删除的节点信息
-        """
+        """比较先前和现在节点的获取要添加和删除的节点信息"""
         lb_conf = self.get_k8s_lb_info(data["id"])
         pre_ip_info = json.loads(lb_conf.ip_info)
         update_ip_info = data["ip_info"]
-        common_node_id_set = set([
-            node_id
-            for node_id in pre_ip_info
-            if node_id in update_ip_info
-        ])
+        common_node_id_set = set([node_id for node_id in pre_ip_info if node_id in update_ip_info])
         # 要删除的节点
         delete_node_id_list = list(set(pre_ip_info.keys()) - common_node_id_set)
         add_node_id_list = list(set(update_ip_info.keys()) - common_node_id_set)
         return lb_conf, delete_node_id_list, add_node_id_list
 
     def update_node_label_list(self, request, node_labels, op="add"):
-        """通过op参数判断是添加还是删除label
-        """
+        """通过op参数判断是添加还是删除label"""
         username = request.user.username
         node_id_labels = {}
         for info in node_labels:
@@ -379,8 +358,7 @@ class NginxIngressRetrieveUpdateViewSet(NginxIngressBase, HelmReleaseMixin):
         instance.save()
 
     def delete_node_label(self, request, delete_node_id_list, project_id, lb_conf):
-        """删除节点标签
-        """
+        """删除节点标签"""
         delete_node_instances = self.get_node_labels(delete_node_id_list)
         node_id_labels = self.update_node_label_list(request, delete_node_instances, op="del")
         self.create_node_label_via_bcs(request, project_id, lb_conf.cluster_id, node_id_labels)
@@ -391,7 +369,7 @@ class NginxIngressRetrieveUpdateViewSet(NginxIngressBase, HelmReleaseMixin):
             "cluster_id": lb_conf.cluster_id,
             "creator": request.user.username,
             "updator": request.user.username,
-            "ip_info": json.dumps(add_node_id_list)
+            "ip_info": json.dumps(add_node_id_list),
         }
         self.node_label(request, save_label_data)
         add_node_instances = self.get_node_labels(add_node_id_list)
@@ -436,7 +414,7 @@ class NginxIngressRetrieveUpdateViewSet(NginxIngressBase, HelmReleaseMixin):
             resource_type='lb',
             resource="%s:%s" % (lb_conf.cluster_id, lb_conf.namespace_id),
             resource_id=pk,
-            extra=json.dumps(data)
+            extra=json.dumps(data),
         )
         # release 对应的版本为"(current-unchanged) v1.1.2"
         version = data["version"].split(constants.RELEASE_VERSION_PREFIX)[-1].strip()
@@ -446,7 +424,8 @@ class NginxIngressRetrieveUpdateViewSet(NginxIngressBase, HelmReleaseMixin):
         updated_instance = release.upgrade_app(
             access_token=access_token,
             chart_version_id=chart_version.id,
-            answers=[], customs=[],
+            answers=[],
+            customs=[],
             valuefile=data["values_content"],
             updator=username,
             sys_variables=sys_variables,
@@ -458,8 +437,7 @@ class NginxIngressRetrieveUpdateViewSet(NginxIngressBase, HelmReleaseMixin):
         raise error_codes.APIError(updated_instance.transitioning_message)
 
     def delete_lb_conf(self, lb_conf):
-        """标识此条记录被删除
-        """
+        """标识此条记录被删除"""
         lb_conf.is_deleted = True
         lb_conf.deleted_time = datetime.now()
         # 删除的名称格式为id:deleted
@@ -482,7 +460,8 @@ class NginxIngressRetrieveUpdateViewSet(NginxIngressBase, HelmReleaseMixin):
         self.delete_node_label(request, delete_node_id_list, project_id, lb_conf)
         # 删除helm release
         release = self.get_helm_release(
-            lb_conf.cluster_id, K8S_LB_CHART_NAME, namespace_id=lb_conf.namespace_id, namespace=lb_conf.namespace)
+            lb_conf.cluster_id, K8S_LB_CHART_NAME, namespace_id=lb_conf.namespace_id, namespace=lb_conf.namespace
+        )
         if not release:
             return Response()
 
@@ -491,19 +470,15 @@ class NginxIngressRetrieveUpdateViewSet(NginxIngressBase, HelmReleaseMixin):
             user=request.user.username,
             resource_type='lb',
             resource="%s:%s" % (lb_conf.cluster_id, lb_conf.namespace_id),
-            resource_id=pk
+            resource_id=pk,
         )
-        release.destroy(
-            username=request.user.username,
-            access_token=request.user.token.access_token
-        )
+        release.destroy(username=request.user.username, access_token=request.user.token.access_token)
 
         user_log.log_delete(activity_status="succeed")
         return Response()
 
 
 class NginxIngressListNamespaceViewSet(NginxIngressBase):
-
     def list(self, request, project_id, cluster_id):
         used_ns_id_list = K8SLoadBlance.objects.filter(
             project_id=project_id, cluster_id=cluster_id, is_deleted=False

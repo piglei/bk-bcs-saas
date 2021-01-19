@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 class MaskField(serializers.CharField):
     """掩码字段: 只匹配符合正则规则的字符"""
+
     REGEX = re.compile(".")
 
     def to_internal_value(self, data):
@@ -42,6 +43,7 @@ class NickNameField(MaskField):
     名称字段，过滤[中文\w+\-\_]字符集
     test: print "".join(re.compile(u"[\u4300-\u9fa5\w\_\-]+").findall(u"a中文 字母 - ——"))
     """
+
     REGEX = re.compile(u"[\u4e00-\u9fa5\w\-\_]")
 
 
@@ -49,6 +51,7 @@ class ChineseField(MaskField):
     """
     中文字段
     """
+
     REGEX = re.compile(u"[\u4e00-\u9fa5\w\-\_\；\？\。\—\…\《\》\“\”\.\,\s\?\'\"\;\‘\’\r\n]")
 
 
@@ -134,8 +137,8 @@ class HelmValueField(JsonSchemaField):
                 "type": {
                     "type": "string",
                 },
-            }
-        }
+            },
+        },
     }
 
 

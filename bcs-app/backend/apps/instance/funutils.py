@@ -20,8 +20,7 @@ from django.template import Context, Template
 
 
 def update_nested_dict(orginal_dict, update_dict):
-    """
-    """
+    """"""
     new_dict = copy.deepcopy(orginal_dict)
     for k, v in update_dict.items():
         if isinstance(v, collections.Mapping):

@@ -128,8 +128,7 @@ class ShowVersionViewSet(viewsets.ViewSet, TemplatePermission):
         return Response({"results": serializer.data})
 
     def save_with_ventity(self, request, project_id, template_id):
-        """保存用户可见的版本信息
-        """
+        """保存用户可见的版本信息"""
         data = request.data
         data.update({"project_id": project_id, "template_id": template_id})
         serializer = ShowVersionWithEntitySLZ(data=data)
@@ -149,8 +148,7 @@ class ShowVersionViewSet(viewsets.ViewSet, TemplatePermission):
         return Response({"show_version_id": show_version.id, "real_version_id": show_version.real_version_id})
 
     def save_without_ventity(self, request, project_id, template_id):
-        """仅仅创建可见版本
-        """
+        """仅仅创建可见版本"""
         template = models.get_template_by_project_and_id(project_id, template_id)
         self.can_edit_template(request, template)
 

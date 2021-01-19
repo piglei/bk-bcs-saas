@@ -52,7 +52,8 @@ class TestCRDAndCustomObject:
     def use_faked_configuration(self):
         """Replace ConfigurationService with fake object"""
         with mock.patch(
-            'backend.resources.utils.kube_client.BcsKubeConfigurationService', new=FakeBcsKubeConfigurationService,
+            'backend.resources.utils.kube_client.BcsKubeConfigurationService',
+            new=FakeBcsKubeConfigurationService,
         ):
             yield
 

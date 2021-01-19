@@ -100,7 +100,9 @@ RDS_HANDER_SETTINGS = {
 CACHES["default"] = {
     "BACKEND": "django_redis.cache.RedisCache",
     "LOCATION": REDIS_URL,
-    "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient",},
+    "OPTIONS": {
+        "CLIENT_CLASS": "django_redis.client.DefaultClient",
+    },
 }
 
 # 针对BCS区分环境, backend的staging环境，连接bcs的uat和debugger，默认使用uat

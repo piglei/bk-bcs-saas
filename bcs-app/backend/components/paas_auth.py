@@ -16,14 +16,12 @@ from .iam import permissions
 
 
 def get_access_token():
-    """获取非用户态access_token
-    """
+    """获取非用户态access_token"""
     return get_client_access_token()
 
 
 def get_role_list(access_token, project_id, need_user=False):
-    """获取角色列表(权限中心暂时没有角色的概念，先获取所有用户)
-    """
+    """获取角色列表(权限中心暂时没有角色的概念，先获取所有用户)"""
     project_perm = permissions.ProjectPermission()
     users = project_perm.query_authorized_users(project_id, permissions.ProjectActions.VIEW.value)
 

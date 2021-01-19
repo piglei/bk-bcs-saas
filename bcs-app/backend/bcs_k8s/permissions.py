@@ -26,6 +26,7 @@ def with_function_controller_check(permission_cls):
     def wrapper(cls):
         cls.permission_classes = (*cls.permission_classes, permission_cls)
         return cls
+
     return wrapper
 
 

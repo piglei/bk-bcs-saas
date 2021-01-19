@@ -43,8 +43,7 @@ logger = logging.getLogger(__name__)
 
 
 def one_line_error(detail):
-    """Extract one line error from error dict
-    """
+    """Extract one line error from error dict"""
     try:
         for field, errmsg in detail.items():
             if field == "non_field_errors":
@@ -227,7 +226,7 @@ class VueTemplateView(TemplateView):
             "BK_CC_HOST": settings.BK_CC_HOST,
             "SITE_URL": settings.SITE_URL[:-1],
             "BK_IAM_APP_URL": settings.BK_IAM_APP_URL,
-            "SUPPORT_MESOS": str2bool(os.environ.get("BKAPP_SUPPORT_MESOS", "false"))
+            "SUPPORT_MESOS": str2bool(os.environ.get("BKAPP_SUPPORT_MESOS", "false")),
         }
         response = super(VueTemplateView, self).get(request, **context)
         return response

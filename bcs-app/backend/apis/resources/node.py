@@ -19,7 +19,6 @@ from backend.apis.resources.serializers import CreateNodeLabelsSLZ
 
 
 class NodeLabelsViewSet(NoAccessTokenBaseAPIViewSet):
-
     def set_labels(self, request, project_id_or_code, cluster_id):
         slz = CreateNodeLabelsSLZ(data=request.data)
         slz.is_valid(raise_exception=True)

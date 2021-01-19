@@ -26,8 +26,7 @@ class Namespace(Resource, CoreAPIClassMixins):
     resource_kind = K8sResourceKinds.Namespace.value
 
     def get_body(self, metadata=None, spec=None):
-        """render request body
-        """
+        """render request body"""
         # include api_version, kind, metadata, spec
         # body = client.V1Namespace(api_version=, kind=, metadata=, spec=)
         pass

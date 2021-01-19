@@ -111,8 +111,7 @@ def get_project_image_list(query):
 
 
 def get_image_tags(access_token, project_id, project_code, offset, limit, **query_params):
-    """获取镜像信息和tag列表
-    """
+    """获取镜像信息和tag列表"""
     client = HarborClient(access_token, project_id, project_code)
     resp = client.get_image_tags(**query_params)
     # 处理返回数据(harbor 的tag列表没有做分页)
@@ -127,8 +126,7 @@ def get_image_tags(access_token, project_id, project_code, offset, limit, **quer
 
 
 def get_pub_image_info(query):
-    """公共获镜像详情（tag列表信息)
-    """
+    """公共获镜像详情（tag列表信息)"""
     client = get_harbor_client(query)
     resp = client.get_image_tags(**query)
     data = resp.get("data") or {}

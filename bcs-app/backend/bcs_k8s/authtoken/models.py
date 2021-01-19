@@ -23,6 +23,7 @@ import rest_framework.authtoken.models
 from .managers import TokenManager
 from .providers import provider_choice
 
+
 def make_random_key():
     return get_random_string(63)
 
@@ -51,7 +52,4 @@ class Token(models.Model):
         unique_together = (('username', 'name'),)
 
     def validate_request_data(self, request_data):
-        Token.objects.validate_request_data(
-            token=self,
-            request_data=request_data
-        )
+        Token.objects.validate_request_data(token=self, request_data=request_data)

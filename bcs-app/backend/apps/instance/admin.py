@@ -16,19 +16,33 @@ from .models import VersionInstance, InstanceConfig, MetricConfig, InstanceEvent
 
 
 class VersionInstanceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'version_id', 'show_version_name',
-                    'template_id', 'ns_id', 'is_bcs_success',
-                    'created', 'updated', 'is_deleted')
-    search_fields = ('id', 'version_id', 'show_version_name',
-                     'template_id', 'ns_id', 'is_bcs_success',
-                     'created', 'updated', 'is_deleted')
+    list_display = (
+        'id',
+        'version_id',
+        'show_version_name',
+        'template_id',
+        'ns_id',
+        'is_bcs_success',
+        'created',
+        'updated',
+        'is_deleted',
+    )
+    search_fields = (
+        'id',
+        'version_id',
+        'show_version_name',
+        'template_id',
+        'ns_id',
+        'is_bcs_success',
+        'created',
+        'updated',
+        'is_deleted',
+    )
 
 
 class InstanceConfigAdmin(admin.ModelAdmin):
-    list_display = ('instance_id', 'name', 'namespace',
-                    'category', 'is_bcs_success', 'oper_type', 'status')
-    search_fields = ('instance_id', 'name', 'namespace',
-                     'category', 'is_bcs_success', 'oper_type', 'status')
+    list_display = ('instance_id', 'name', 'namespace', 'category', 'is_bcs_success', 'oper_type', 'status')
+    search_fields = ('instance_id', 'name', 'namespace', 'category', 'is_bcs_success', 'oper_type', 'status')
 
 
 admin.site.register(VersionInstance, VersionInstanceAdmin)

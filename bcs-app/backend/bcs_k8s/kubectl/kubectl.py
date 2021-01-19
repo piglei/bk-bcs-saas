@@ -183,8 +183,7 @@ class KubectlClusterClient:
         raise ValueError(max_retries)
 
     def _run_command(self, cmd_arguments):
-        """Run the kubectl command with wrapped exceptions
-        """
+        """Run the kubectl command with wrapped exceptions"""
         cmd_str = " ".join(cmd_arguments)
         logger.info("Calling kubectl cmd, cmd: (%s)", cmd_str)
         try:

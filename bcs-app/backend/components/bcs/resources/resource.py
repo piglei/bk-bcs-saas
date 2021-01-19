@@ -123,8 +123,7 @@ class FilterResourceData:
 
 class BaseMixins:
     def compose_api_class(self, group_version):
-        """通过group version 组装对应分组的api class
-        """
+        """通过group version 组装对应分组的api class"""
         return f"{''.join([info.capitalize() for info in group_version.split('/')])}Api"
 
 

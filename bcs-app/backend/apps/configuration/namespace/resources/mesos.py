@@ -67,19 +67,12 @@ def create_imagepullsecret(access_token, project_id, project_code, cluster_id, n
     # compose config
     secret_config = {
         "kind": "secret",
-        "metadata": {
-            "name": MESOS_IMAGE_SECRET,
-            "namespace": namespace
-        },
+        "metadata": {"name": MESOS_IMAGE_SECRET, "namespace": namespace},
         "datas": {
-            "user": {
-                "content": base64.b64encode(user.encode(encoding="utf-8")).decode()
-            },
-            "pwd": {
-                "content": base64.b64encode(pwd.encode(encoding="utf-8")).decode()
-            }
+            "user": {"content": base64.b64encode(user.encode(encoding="utf-8")).decode()},
+            "pwd": {"content": base64.b64encode(pwd.encode(encoding="utf-8")).decode()},
         },
-        "apiVersion": "v4"
+        "apiVersion": "v4",
     }
     client = MesosClient(access_token, project_id, cluster_id, env=None)
     resp = client.create_secret(namespace, secret_config)

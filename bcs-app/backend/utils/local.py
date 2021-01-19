@@ -40,8 +40,7 @@ class Local(Singleton):
 
     @property
     def request(self):
-        """获取全局request对象
-        """
+        """获取全局request对象"""
         request = getattr(_local, 'request', None)
         # if not request:
         #     raise RuntimeError("request object not in local")
@@ -49,8 +48,7 @@ class Local(Singleton):
 
     @request.setter
     def request(self, value):
-        """设置全局request对象
-        """
+        """设置全局request对象"""
         _local.request = value
 
     @property
@@ -62,8 +60,7 @@ class Local(Singleton):
         return new_request_id()
 
     def get_http_request_id(self):
-        """从接入层获取request_id，或者生成一个新的request_id
-        """
+        """从接入层获取request_id，或者生成一个新的request_id"""
         # 在从header中获取
         request_id = self.request.META.get(settings.REQUEST_ID_HEADER, '')
         if request_id:

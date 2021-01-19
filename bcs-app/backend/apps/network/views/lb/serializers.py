@@ -32,15 +32,7 @@ class MesosLBSLZ(serializers.ModelSerializer):
 
     class Meta:
         model = MesosLoadBalancer
-        fields = [
-            "id",
-            "name",
-            "cluster_id",
-            "namespace",
-            "ip_list",
-            "status",
-            "data"
-        ]
+        fields = ["id", "name", "cluster_id", "namespace", "ip_list", "status", "data"]
 
 
 class CreateOrUpdateMesosLBSLZ(serializers.Serializer):

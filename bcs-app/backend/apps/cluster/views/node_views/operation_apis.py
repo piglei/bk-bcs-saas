@@ -40,7 +40,8 @@ class DeleteNodeRecordViewSet(Nodes, viewsets.ViewSet):
         node_info = self.get_node_by_id(access_token, project_id, cluster_id, node_id)
         # set current node status is removed
         self.update_nodes_in_cluster(
-            access_token, project_id, cluster_id, [node_info['inner_ip']], CommonStatus.Removed)
+            access_token, project_id, cluster_id, [node_info['inner_ip']], CommonStatus.Removed
+        )
 
         return response.Response()
 
@@ -63,8 +64,7 @@ class BatchReinstallNodes(ClusterPerm, Nodes, viewsets.ViewSet):
         # 获取集群下的节点
         cluster_nodes = self.get_cluster_nodes(request, project_id, cluster_id)
         # 获取请求参数
-        slz = node_serializers.BatchReinstallNodesSLZ(
-            data=request.data, context={'cluster_nodes': cluster_nodes})
+        slz = node_serializers.BatchReinstallNodesSLZ(data=request.data, context={'cluster_nodes': cluster_nodes})
         slz.is_valid(raise_exception=True)
         req_data = slz.validated_data
         # 获取集群信息
@@ -80,11 +80,12 @@ class BatchReinstallNodes(ClusterPerm, Nodes, viewsets.ViewSet):
             resource_type='node',
             resource=node_ips[:512],
             resource_id=','.join([str(id) for id in node_id_ip_map.keys()])[:256],
-            description=_("集群: {}, batch reinstall nodes: {}").format(cluster_id, node_ips)
+            description=_("集群: {}, batch reinstall nodes: {}").format(cluster_id, node_ips),
         ).log_modify():
             # 更改节点状态为初始化中
             self.update_nodes_in_cluster(
-                request.user.token.access_token, project_id, cluster_id, node_ip_list, CommonStatus.Initializing)
+                request.user.token.access_token, project_id, cluster_id, node_ip_list, CommonStatus.Initializing
+            )
             # 下发流程，触发重试任务
             node_client = node.BatchReinstallNodes(request, project_id, cluster_info, node_id_ip_map)
             node_client.reinstall()
@@ -103,7 +104,7 @@ class NodelabelsViewSets(viewsets.ViewSet):
             # 组装格式, 注意value必须为string
             item = {
                 "strings": {key: {"value": str(val)} for label in node_label["labels"] for key, val in label.items()},
-                "innerIP": node_label["inner_ip"]
+                "innerIP": node_label["inner_ip"],
             }
             if cluster_id in cluster_node_labels:
                 cluster_node_labels[cluster_id].append(item)
@@ -122,7 +123,8 @@ class NodelabelsViewSets(viewsets.ViewSet):
 
         project_kind_name = ProjectKind.get_choice_label(request.project.kind)
         getattr(self, f"set_{project_kind_name.lower()}_node_labels")(
-            request.user.token.access_token, project_id, data["node_labels"])
+            request.user.token.access_token, project_id, data["node_labels"]
+        )
 
         return response.Response()
 
@@ -138,14 +140,13 @@ class NodelabelsViewSets(viewsets.ViewSet):
         return {
             cluster["cluster_id"]: {
                 "cluster_env": cluster_env_transfer(cluster["environment"]),
-                "cluster_name": cluster["name"]
+                "cluster_name": cluster["name"],
             }
             for cluster in clusters
         }
 
     def compose_node_data(self, nodes, labels, cluster_id_map):
-        """组装node数据，添加label、集群名称
-        """
+        """组装node数据，添加label、集群名称"""
         for node_info in nodes:
             inner_ip = node_info["inner_ip"]
             cluster_id = node_info["cluster_id"]

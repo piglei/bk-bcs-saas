@@ -31,11 +31,15 @@ class K8SIngressControllerViewSet(viewsets.ViewSet, HelmReleaseMixin):
 
     def get_chart_versions(self, request, project_id):
         # 过滤公共仓库下面的lb chart名称
-        chart_versions = ChartVersion.objects.filter(
-            name=self.chart_name,
-            chart__repository__project_id=project_id,
-            chart__repository__name=self.public_repo_name
-        ).order_by("-created").values("version", "id")
+        chart_versions = (
+            ChartVersion.objects.filter(
+                name=self.chart_name,
+                chart__repository__project_id=project_id,
+                chart__repository__name=self.public_repo_name,
+            )
+            .order_by("-created")
+            .values("version", "id")
+        )
         # 获取release版本的version
         params = request.query_params
         cluster_id = params.get("cluster_id")
@@ -47,12 +51,12 @@ class K8SIngressControllerViewSet(viewsets.ViewSet, HelmReleaseMixin):
         # id: -1, 表示此数据为组装数据，仅供前端展示匹配使用
         chart_versions = list(chart_versions)
         chart_versions.insert(
-            0, {"version": f"{self.release_version_prefix} {release.get_current_version()}", "id": -1})
+            0, {"version": f"{self.release_version_prefix} {release.get_current_version()}", "id": -1}
+        )
         return Response(chart_versions)
 
     def get_version_detail(self, request, project_id):
-        """获取指定版本chart信息，包含release的版本
-        """
+        """获取指定版本chart信息，包含release的版本"""
         slz = serializers.ChartVersionSLZ(data=request.data)
         slz.is_valid(raise_exception=True)
         data = slz.validated_data
@@ -63,7 +67,7 @@ class K8SIngressControllerViewSet(viewsets.ViewSet, HelmReleaseMixin):
                 name=self.chart_name,
                 version=version,
                 chart__repository__project_id=project_id,
-                chart__repository__name=self.public_repo_name
+                chart__repository__name=self.public_repo_name,
             )
             version_detail = {"name": self.chart_name, "version": version, "files": chart_version.files}
             return Response(version_detail)

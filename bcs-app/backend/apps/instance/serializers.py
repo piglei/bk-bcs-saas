@@ -18,8 +18,8 @@ from backend.apps.configuration.utils import to_bcs_res_name
 
 
 class InstanceNamespaceSLZ(serializers.Serializer):
-    """
-    """
+    """"""
+
     instance_entity = serializers.JSONField(required=False)
 
     def validate_instance_entity(self, instance_entity):
@@ -39,21 +39,12 @@ class VariableNamespaceSLZ(InstanceNamespaceSLZ):
 
 class VersionInstanceSLZ(serializers.ModelSerializer):
     entity = serializers.JSONField(source='get_entity', read_only=True)
-    template_id = serializers.JSONField(
-        source='get_template_id', read_only=True)
+    template_id = serializers.JSONField(source='get_template_id', read_only=True)
     project_id = serializers.JSONField(source='get_project_id', read_only=True)
 
     class Meta:
         model = VersionInstance
-        fields = (
-            "id",
-            "entity",
-            "template_id",
-            "project_id",
-            "namespaces",
-            "is_start",
-            "version_id"
-        )
+        fields = ("id", "entity", "template_id", "project_id", "namespaces", "is_start", "version_id")
 
 
 class VersionInstanceCreateOrUpdateSLZ(InstanceNamespaceSLZ):
@@ -67,8 +58,7 @@ class VersionInstanceCreateOrUpdateSLZ(InstanceNamespaceSLZ):
     variable_info = serializers.JSONField(required=False)
 
     def validate_is_start(self, is_start):
-        """后台默认为True
-        """
+        """后台默认为True"""
         return True
 
 
@@ -95,8 +85,7 @@ class SingleInstanceSLZ(serializers.Serializer):
     show_version_name = serializers.CharField(required=False)
 
     def validate_is_start(self, is_start):
-        """后台默认为True
-        """
+        """后台默认为True"""
         return True
 
 

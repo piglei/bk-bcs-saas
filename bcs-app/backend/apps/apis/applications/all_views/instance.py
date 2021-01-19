@@ -99,8 +99,7 @@ class SendDeploymentSignal(BaseSendSignal):
     CATEGORY = "deployment"
 
     def get_rc_name_by_deployment(self, request, project_id, cluster_id, namespace, name, project_kind=2):
-        """根据deployment获取到application name
-        """
+        """根据deployment获取到application name"""
         flag, resp = self.get_application_deploy_info(
             request,
             project_id,
@@ -217,8 +216,7 @@ class SendCommand(BaseInstanceAPI):
         }
 
     def get_image_path(self, env_list):
-        """获取image path
-        """
+        """获取image path"""
         image_path = ""
         # 传递image的key的标识
         image_env_name = "image"

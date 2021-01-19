@@ -24,7 +24,12 @@ from backend.apps.cluster import serializers, constants
 from backend.components import paas_cc, ops, cc
 from backend.utils import cc as cc_utils
 from backend.apps.cluster.models import (
-    ClusterInstallLog, NodeUpdateLog, CommonStatus, NodeOperType, NodeLabel, NodeStatus
+    ClusterInstallLog,
+    NodeUpdateLog,
+    CommonStatus,
+    NodeOperType,
+    NodeLabel,
+    NodeStatus,
 )
 from backend.activity_log import client
 from backend.utils.renderers import BKAPIRenderer
@@ -48,9 +53,7 @@ class BaseNode(object):
     render_classes = (BKAPIRenderer,)
 
     def get_cluster_snapshot(self):
-        snapshot_info = paas_cc.get_cluster_snapshot(
-            self.access_token, self.project_id, self.cluster_id
-        )
+        snapshot_info = paas_cc.get_cluster_snapshot(self.access_token, self.project_id, self.cluster_id)
         if snapshot_info.get('code') != ErrorCode.NoError:
             raise error_codes.APIError(snapshot_info.get('message'))
         return snapshot_info.get('data', {})
@@ -58,50 +61,27 @@ class BaseNode(object):
     def update_nodes(self, node_ips, status=CommonStatus.Initializing):
         if not node_ips:
             return
-        data = [
-            {
-                'cluster_id': self.cluster_id,
-                'inner_ip': ip,
-                'status': status
-            }
-            for ip in node_ips
-        ]
-        resp = paas_cc.update_node_with_cluster(
-            self.access_token, self.project_id, data={'updates': data}
-        )
+        data = [{'cluster_id': self.cluster_id, 'inner_ip': ip, 'status': status} for ip in node_ips]
+        resp = paas_cc.update_node_with_cluster(self.access_token, self.project_id, data={'updates': data})
         if resp.get('code') != ErrorCode.NoError:
             raise error_codes.APIError(resp.get('message'))
 
     def update_cluster_nodes(self, node_ips, status=CommonStatus.Initializing):
-        """更新阶段状态，并返回更新后的信息
-        """
-        data = [
-            {
-                'inner_ip': ip,
-                'status': status
-            }
-            for ip in node_ips
-        ]
-        resp = paas_cc.update_node_list(
-            self.access_token, self.project_id, self.cluster_id, data=data
-        )
+        """更新阶段状态，并返回更新后的信息"""
+        data = [{'inner_ip': ip, 'status': status} for ip in node_ips]
+        resp = paas_cc.update_node_list(self.access_token, self.project_id, self.cluster_id, data=data)
         if resp.get('code') != ErrorCode.NoError:
             raise error_codes.APIError(resp.get('message'))
         return resp.get('data') or []
 
     def get_node_ip(self):
-        node_info = paas_cc.get_node(
-            self.access_token, self.project_id, self.node_id, cluster_id=self.cluster_id
-        )
+        node_info = paas_cc.get_node(self.access_token, self.project_id, self.node_id, cluster_id=self.cluster_id)
         if node_info.get('code') != ErrorCode.NoError:
             raise error_codes.APIError(node_info.get('message'))
         return node_info.get('data') or {}
 
     def get_request_config(self, op_type=constants.OpType.ADD_NODE.value):
-        kind_type_map = {
-            'k8s': k8s.NodeConfig,
-            'mesos': mesos.NodeConfig
-        }
+        kind_type_map = {'k8s': k8s.NodeConfig, 'mesos': mesos.NodeConfig}
         snapshot_info = self.get_cluster_snapshot()
         snapshot_config = json.loads(snapshot_info.get('configure', '{}'))
         if snapshot_config.get('common'):
@@ -125,16 +105,13 @@ class BaseNode(object):
         log_params['task_url'] = data.get('task_url') or ''
         log.set_params(log_params)
 
-    def create_node_by_bcs(self, node_info_list, control_ip=None, config=None, websvr=None): # noqa
+    def create_node_by_bcs(self, node_info_list, control_ip=None, config=None, websvr=None):  # noqa
         if not config:
             config = self.get_request_config()
 
         control_ip = config.pop('control_ip', []) or control_ip
         websvr = config.pop('websvr', []) or websvr
-        node_info = {
-            i['inner_ip']: '[%s]' % i['id']
-            for i in node_info_list
-        }
+        node_info = {i['inner_ip']: '[%s]' % i['id'] for i in node_info_list}
         params = {
             'project_id': self.project_id,
             'cluster_id': self.cluster_id,
@@ -148,7 +125,7 @@ class BaseNode(object):
             'node_info': node_info,
             'master_ip_list': self.master_ip_list,
             'module_id_list': self.module_id_list,
-            'websvr': websvr
+            'websvr': websvr,
         }
         log = NodeUpdateLog.objects.create(
             project_id=self.project_id,
@@ -159,12 +136,21 @@ class BaseNode(object):
             oper_type=NodeOperType.NodeInstall,
             node_id=",".join(node_info.values()),
             status=CommonStatus.Initializing,
-            is_polling=True
+            is_polling=True,
         )
         task_info = ops.add_cluster_node(
-            self.access_token, self.project_id, self.kind_name, self.cluster_id,
-            self.master_ip_list, self.ip_list, config, control_ip,
-            self.cc_app_id, self.username, self.module_id_list, websvr
+            self.access_token,
+            self.project_id,
+            self.kind_name,
+            self.cluster_id,
+            self.master_ip_list,
+            self.ip_list,
+            config,
+            control_ip,
+            self.cc_app_id,
+            self.username,
+            self.module_id_list,
+            websvr,
         )
         if task_info.get('code') != ErrorCode.NoError:
             log.set_finish_polling_status(True, False, CommonStatus.InitialFailed)
@@ -190,7 +176,6 @@ class BaseNode(object):
 
 
 class CreateNode(BaseNode):
-
     def __init__(self, request, project_id, cluster_id):
         self.request = request
         self.project_id = project_id
@@ -217,8 +202,7 @@ class CreateNode(BaseNode):
 
     def get_node_list(self):
         cluster_node_info = paas_cc.get_node_list(
-            self.access_token, self.project_id, self.cluster_id,
-            params={'limit': DEFAULT_NODE_LIMIT}
+            self.access_token, self.project_id, self.cluster_id, params={'limit': DEFAULT_NODE_LIMIT}
         )
         if cluster_node_info.get('code') != ErrorCode.NoError:
             raise error_codes.APIError(cluster_node_info.get('message'))
@@ -227,9 +211,7 @@ class CreateNode(BaseNode):
     def get_removed_remained_ips(self):
         removed_ips, remained_ips = [], []
         project_node_list = [
-            info['inner_ip']
-            for info in self.project_nodes
-            if info['status'] in [CommonStatus.Removed]
+            info['inner_ip'] for info in self.project_nodes if info['status'] in [CommonStatus.Removed]
         ]
         for ip in self.ip_list:
             if ip in project_node_list:
@@ -248,13 +230,11 @@ class CreateNode(BaseNode):
                 'inner_ip': ip,
                 'description': ip,
                 'device_class': '',
-                'status': CommonStatus.Initializing
+                'status': CommonStatus.Initializing,
             }
             for ip in remained_ips
         ]
-        resp = paas_cc.create_node(
-            self.access_token, self.project_id, self.cluster_id, {'objects': data}
-        )
+        resp = paas_cc.create_node(self.access_token, self.project_id, self.cluster_id, {'objects': data})
         if resp.get('code') != ErrorCode.NoError:
             raise error_codes.APIError(resp.get('message'))
 
@@ -294,7 +274,7 @@ class CreateNode(BaseNode):
             project_id=self.project_id,
             user=self.username,
             resource_type=ACTIVITY_RESOURCE_TYPE,
-                resource=','.join(self.ip_list)[:32],
+            resource=','.join(self.ip_list)[:32],
         ).log_add():
             # 更新所有节点为初始化中
             node_info_list = self.update_cluster_nodes(self.ip_list)
@@ -305,7 +285,6 @@ class CreateNode(BaseNode):
 
 
 class ReinstallNode(BaseNode):
-
     def __init__(self, request, project_id, cluster_id, node_id):
         self.request = request
         self.access_token = request.user.token.access_token
@@ -326,8 +305,7 @@ class ReinstallNode(BaseNode):
 
     def get_node_last_log(self):
         log = NodeUpdateLog.objects.filter(
-            project_id=self.project_id, cluster_id=self.cluster_id,
-            node_id__contains='[%s]' % self.node_id
+            project_id=self.project_id, cluster_id=self.cluster_id, node_id__contains='[%s]' % self.node_id
         ).last()
         if not log:
             raise error_codes.APIError(_("没有查询到节点添加记录，请联系管理员处理!"))
@@ -360,7 +338,7 @@ class ReinstallNode(BaseNode):
             user=self.username,
             resource_type=ACTIVITY_RESOURCE_TYPE,
             resource=node_ip,
-            resource_id=self.node_id
+            resource_id=self.node_id,
         ).log_modify():
             self.update_nodes([node_ip])
             # 调用OPS api
@@ -369,8 +347,7 @@ class ReinstallNode(BaseNode):
             self.module_id_list = params['module_id_list']
             self.ip_list = [node_ip]
             log = self.create_node_by_bcs(
-                [node_info], control_ip=params['control_ip'],
-                config=params['config'], websvr=params['websvr']
+                [node_info], control_ip=params['control_ip'], config=params['config'], websvr=params['websvr']
             )
             if not log.is_finished and log.is_polling:
                 log.polling_task()
@@ -379,7 +356,6 @@ class ReinstallNode(BaseNode):
 
 
 class DeleteNodeBase(BaseNode):
-
     def delete_via_bcs(self, request, project_id, cluster_id, kind_name, node_info):
         self.ip_list = list(node_info.keys())
         params = {
@@ -390,7 +366,7 @@ class DeleteNodeBase(BaseNode):
             'ip_list': self.ip_list,
             'kind': request.project['kind'],
             'kind_name': kind_name,
-            'cc_app_id': request.project['cc_app_id']
+            'cc_app_id': request.project['cc_app_id'],
         }
         log = NodeUpdateLog.objects.create(
             project_id=project_id,
@@ -401,16 +377,24 @@ class DeleteNodeBase(BaseNode):
             operator=request.user.username,
             oper_type=NodeOperType.NodeRemove,
             is_polling=True,
-            is_finished=False
+            is_finished=False,
         )
         config = self.get_request_config(op_type=constants.OpType.DELETE_NODE.value)
         control_ip = config.pop('control_ip', [])
         websvr = config.pop('websvr', [])
         try:
             task_info = ops.delete_cluster_node(
-                request.user.token.access_token, project_id, kind_name, cluster_id,
-                self.master_ip_list, self.ip_list, config, control_ip,
-                request.project['cc_app_id'], request.user.username, websvr
+                request.user.token.access_token,
+                project_id,
+                kind_name,
+                cluster_id,
+                self.master_ip_list,
+                self.ip_list,
+                config,
+                control_ip,
+                request.project['cc_app_id'],
+                request.user.username,
+                websvr,
             )
         except Exception as err:
             logger.exception('request bcs ops error, detail: %s', err)
@@ -435,7 +419,6 @@ class DeleteNodeBase(BaseNode):
 
 
 class DeleteNode(DeleteNodeBase):
-
     def __init__(self, request, project_id, cluster_id, node_id):
         self.request = request
         self.project_id = project_id
@@ -451,8 +434,7 @@ class DeleteNode(DeleteNodeBase):
     def k8s_container_num(self):
         client = bcs_k8s.K8SClient(self.access_token, self.project_id, self.cluster_id, None)
         host_pod_info = client.get_pod(
-            host_ips=[self.node_ip],
-            field=','.join(['data.status.containerStatuses', 'data.metadata.namespace'])
+            host_ips=[self.node_ip], field=','.join(['data.status.containerStatuses', 'data.metadata.namespace'])
         )
         if host_pod_info.get('code') != ErrorCode.NoError:
             raise error_codes.APIError(host_pod_info.get('message'))
@@ -477,8 +459,7 @@ class DeleteNode(DeleteNodeBase):
         return count
 
     def check_host_exist_container(self):
-        """获取node下是否有容器运行
-        """
+        """获取node下是否有容器运行"""
         container_count = getattr(self, '%s_container_num' % self.kind_name)()
         if container_count:
             raise error_codes.CheckFailed(_("当前节点下存在运行容器, 请先清理容器!"))
@@ -489,9 +470,11 @@ class DeleteNode(DeleteNodeBase):
 
     def check_host_stop_scheduler(self, node_info):
         status = [
-            NodeStatus.ToRemoved, NodeStatus.Removable,
-            NodeStatus.RemoveFailed, CommonStatus.ScheduleFailed,
-            NodeStatus.InitialFailed
+            NodeStatus.ToRemoved,
+            NodeStatus.Removable,
+            NodeStatus.RemoveFailed,
+            CommonStatus.ScheduleFailed,
+            NodeStatus.InitialFailed,
         ]
         if node_info.get("status") not in status:
             raise error_codes.CheckFailed(_("节点必须要先停用，才可以删除，请确认!"))
@@ -503,10 +486,7 @@ class DeleteNode(DeleteNodeBase):
 
     def delete_node_labels(self):
         NodeLabel.objects.filter(node_id=self.node_id, is_deleted=False).update(
-            is_deleted=True,
-            deleted_time=datetime.now(),
-            updator=self.username,
-            labels=json.dumps({})
+            is_deleted=True, deleted_time=datetime.now(), updator=self.username, labels=json.dumps({})
         )
 
     def delete(self):
@@ -532,7 +512,7 @@ class DeleteNode(DeleteNodeBase):
             user=self.username,
             resource_type=ACTIVITY_RESOURCE_TYPE,
             resource=self.node_ip,
-            resource_id=self.node_id
+            resource_id=self.node_id,
         ).log_delete():
             # 更新状态
             self.update_nodes([self.node_ip], status=CommonStatus.Removing)
@@ -563,7 +543,7 @@ class DeleteNode(DeleteNodeBase):
             user=self.username,
             resource_type=ACTIVITY_RESOURCE_TYPE,
             resource=self.node_ip,
-            resource_id=self.node_id
+            resource_id=self.node_id,
         ).log_delete():
             # 更新状态
             self.update_nodes([self.node_ip], status=CommonStatus.Removing)
@@ -576,7 +556,6 @@ class DeleteNode(DeleteNodeBase):
 
 
 class BatchDeleteNode(DeleteNodeBase):
-
     def __init__(self, request, project_id, cluster_id, node_list):
         self.request = request
         self.project_id = project_id
@@ -591,17 +570,13 @@ class BatchDeleteNode(DeleteNodeBase):
 
         node_info = {node['inner_ip']: '[%s]' % node['id'] for node in self.node_list}
         # 更新节点状态为删除中
-        self.update_cluster_nodes(
-            [node["inner_ip"] for node in self.node_list],
-            NodeStatus.Removing
-        )
+        self.update_cluster_nodes([node["inner_ip"] for node in self.node_list], NodeStatus.Removing)
         log = self.delete_via_bcs(self.request, self.project_id, self.cluster_id, self.kind_name, node_info)
         if not log.is_finished and log.is_polling:
             log.polling_task()
 
 
 class BatchReinstallNodes(BaseNode):
-
     def __init__(self, request, project_id, cluster_info, node_id_ip_map):
         self.request = request
         self.project_id = project_id
@@ -619,7 +594,6 @@ class BatchReinstallNodes(BaseNode):
         # 现阶段平台侧不主动创建CMDB set&module，赋值为空列表
         self.module_id_list = []
         self.ip_list = list(self.node_id_ip_map.values())
-        log = self.create_node_by_bcs(
-            [{'inner_ip': ip, 'id': id} for id, ip in self.node_id_ip_map.items()])
+        log = self.create_node_by_bcs([{'inner_ip': ip, 'id': id} for id, ip in self.node_id_ip_map.items()])
         if not log.is_finished and log.is_polling:
             log.polling_task()

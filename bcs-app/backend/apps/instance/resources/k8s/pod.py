@@ -16,7 +16,6 @@ from backend.apps.instance.resources import utils
 
 
 class Pod(BCSResource):
-
     def _strategy_params_to_int(self, roll_update_strategy, resource_name, metadata_name, is_preview, is_validate):
         strategy_params = ['maxUnavailable', 'maxSurge']
         for p in strategy_params:

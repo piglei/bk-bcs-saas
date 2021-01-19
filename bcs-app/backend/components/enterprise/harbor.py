@@ -107,8 +107,7 @@ class HarborClient:
         return resp
 
     def create_project_path(self):
-        """创建项目仓库路径
-        """
+        """创建项目仓库路径"""
         self.url = f"{DEPOT_API_PREFIX}/project/{self.project_code}"
         resp = http_post(self.url, **self.kwargs)
         self.method = "POST"

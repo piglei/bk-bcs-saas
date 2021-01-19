@@ -77,15 +77,21 @@ class RollbackPreviousVersion(InstanceAPI, viewsets.ViewSet):
             'current_config': current_config,
             'current_config_yaml': self.json2yaml(last_config),
             'last_config': last_config,
-            'last_config_yaml': self.json2yaml(last_config)
+            'last_config_yaml': self.json2yaml(last_config),
         }
 
         return response.Response(data)
 
     def update_resource(self, request, project_id, cluster_id, namespace, config, instance_detail):
         resp = self.update_deployment(
-            request, project_id, cluster_id, namespace, config,
-            kind=request.project.kind, category=instance_detail.category, app_name=instance_detail.name
+            request,
+            project_id,
+            cluster_id,
+            namespace,
+            config,
+            kind=request.project.kind,
+            category=instance_detail.category,
+            app_name=instance_detail.name,
         )
         is_bcs_success = True if resp.data.get('code') == ErrorCode.NoError else False
         # 更新状态
@@ -129,7 +135,7 @@ class RollbackPreviousVersion(InstanceAPI, viewsets.ViewSet):
             resource_type="instance",
             resource=instance_detail.name,
             resource_id=instance_id,
-            description=desc
+            description=desc,
         ).log_modify():
             self.update_resource(request, project_id, cluster_id, namespace, last_config, instance_detail)
 
@@ -149,8 +155,7 @@ class ReschedulePodsViewSet(InstanceAPI, viewsets.ViewSet):
             ns_perm.can_use(raise_exception=True)
 
     def _get_pod_names(self, request, project_id, resource_list):
-        """通过应用名称获取相应的
-        """
+        """通过应用名称获取相应的"""
         pod_names = {}
         for info in resource_list:
             cluster_id = info["cluster_id"]
@@ -165,7 +170,7 @@ class ReschedulePodsViewSet(InstanceAPI, viewsets.ViewSet):
                 app_name=name,
                 ns_name=namespace,
                 category=resource_kind,
-                kind=request.project.kind
+                kind=request.project.kind,
             )
             if not is_bcs_success:
                 raise error_codes.APIError(_("查询资源POD出现异常"))

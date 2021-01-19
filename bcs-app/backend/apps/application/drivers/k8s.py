@@ -19,7 +19,6 @@ from backend.apps.configuration.constants import K8sResourceName
 
 
 class Driver:
-
     @classmethod
     def get_deployment_rs_name_list(cls, client, ns_name, inst_name, extra=None):
         """获取deployment关联的rs名称

@@ -16,10 +16,23 @@ from .models import ProjectDataInfo
 
 
 class ProjectDataInfoAdmin(admin.ModelAdmin):
-    list_display = ('project_id', 'cc_biz_id', 'data_project_id', 'standard_data_id', 'standard_data_name',
-                    'non_standard_data_id', 'non_standard_data_name')
-    search_fields = ('project_id', 'data_project_id', 'standard_data_id', 'standard_data_name',
-                     'non_standard_data_id', 'non_standard_data_name')
+    list_display = (
+        'project_id',
+        'cc_biz_id',
+        'data_project_id',
+        'standard_data_id',
+        'standard_data_name',
+        'non_standard_data_id',
+        'non_standard_data_name',
+    )
+    search_fields = (
+        'project_id',
+        'data_project_id',
+        'standard_data_id',
+        'standard_data_name',
+        'non_standard_data_id',
+        'non_standard_data_name',
+    )
 
 
 admin.site.register(ProjectDataInfo, ProjectDataInfoAdmin)

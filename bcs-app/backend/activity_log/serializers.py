@@ -62,11 +62,9 @@ class EventSLZ(serializers.Serializer):
     end_time = serializers.DateTimeField(required=False)
 
     def validate_begin_time(self, begin_time):
-        """转换为时间戳
-        """
+        """转换为时间戳"""
         return arrow.get(begin_time).timestamp
 
     def validate_end_time(self, end_time):
-        """转换为时间戳
-        """
+        """转换为时间戳"""
         return arrow.get(end_time).timestamp

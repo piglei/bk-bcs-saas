@@ -22,6 +22,7 @@ from .models import Token, make_random_key
 
 class TokenSLZ(serializers.ModelSerializer):
     """ 新增/查询/删除 三种操作 """
+
     user = serializers.HiddenField(default=serializers.CurrentUserDefault(), write_only=True)
     username = serializers.CharField(read_only=True)
     config = serializers.JSONField(
@@ -29,10 +30,7 @@ class TokenSLZ(serializers.ModelSerializer):
         write_only=True,
         label="Config",
         help_text="JSON format data",
-        style={
-            "base_template": "textarea.html",
-            "rows": 10
-        }
+        style={"base_template": "textarea.html", "rows": 10},
     )
 
     def create(self, validated_data):
@@ -61,6 +59,7 @@ class TokenSLZ(serializers.ModelSerializer):
 
 class TokenUpdateSLZ(serializers.ModelSerializer):
     """ 仅用于更新 token """
+
     user = serializers.HiddenField(default=serializers.CurrentUserDefault(), write_only=True)
 
     def update(self, instance, validated_data):

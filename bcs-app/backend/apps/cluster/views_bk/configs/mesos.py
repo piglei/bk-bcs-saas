@@ -27,30 +27,29 @@ from backend.apps.cluster.models import CommonStatus
 
 
 class BaseConfig(object):
-
     def get_config(self, cluster_id, master_ips, node_ip_list=[]):
-        """渲染集群或节点配置
-        """
+        """渲染集群或节点配置"""
         pass
 
 
 class ClusterConfig(BaseConfig):
-
     def __init__(self, base_cluster_config, area_info, cluster_name=""):
         self.mesos_config = base_cluster_config
         self.area_config = json.loads(area_info.get('configuration', '{}'))
         self.cluster_name = cluster_name
 
     def get_request_config(self, cluster_id, master_ips, need_nat=True, **kwargs):
-        self.mesos_config.update({
-            "master_iplist": ",".join(master_ips),
-            "cluster_id": cluster_id,
-            "check_iptables_nat": "Y" if need_nat else "N"
-        })
+        self.mesos_config.update(
+            {
+                "master_iplist": ",".join(master_ips),
+                "cluster_id": cluster_id,
+                "check_iptables_nat": "Y" if need_nat else "N",
+            }
+        )
         return self.mesos_config
 
-class NodeConfig(BaseConfig):
 
+class NodeConfig(BaseConfig):
     def __init__(self, snapshot_config, op_type=None):
         self.mesos_config = snapshot_config
 

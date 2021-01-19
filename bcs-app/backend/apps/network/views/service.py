@@ -29,12 +29,28 @@ from backend.apps.configuration.models import Template, Application, VersionedEn
 from backend.components.bcs import k8s, mesos
 from backend.apps import constants
 from backend.apps.network.utils_bk import get_svc_access_info, get_svc_extended_routes, delete_svc_extended_routes
-from backend.apps.instance.constants import (LABLE_TEMPLATE_ID, LABLE_INSTANCE_ID, SEVICE_SYS_CONFIG,
-                                             ANNOTATIONS_CREATOR, ANNOTATIONS_UPDATOR, ANNOTATIONS_CREATE_TIME,
-                                             ANNOTATIONS_UPDATE_TIME, ANNOTATIONS_WEB_CACHE, K8S_SEVICE_SYS_CONFIG,
-                                             PUBLIC_LABELS, PUBLIC_ANNOTATIONS, SOURCE_TYPE_LABEL_KEY)
-from backend.apps.instance.generator import (handel_service_db_config, handel_k8s_service_db_config, get_bcs_context,
-                                             handle_webcache_config, remove_key, handle_k8s_api_version)
+from backend.apps.instance.constants import (
+    LABLE_TEMPLATE_ID,
+    LABLE_INSTANCE_ID,
+    SEVICE_SYS_CONFIG,
+    ANNOTATIONS_CREATOR,
+    ANNOTATIONS_UPDATOR,
+    ANNOTATIONS_CREATE_TIME,
+    ANNOTATIONS_UPDATE_TIME,
+    ANNOTATIONS_WEB_CACHE,
+    K8S_SEVICE_SYS_CONFIG,
+    PUBLIC_LABELS,
+    PUBLIC_ANNOTATIONS,
+    SOURCE_TYPE_LABEL_KEY,
+)
+from backend.apps.instance.generator import (
+    handel_service_db_config,
+    handel_k8s_service_db_config,
+    get_bcs_context,
+    handle_webcache_config,
+    remove_key,
+    handle_k8s_api_version,
+)
 from backend.apps.instance.utils_pub import get_cluster_version
 from backend.apps.configuration.serializers import ServiceCreateOrUpdateSLZ, K8sServiceCreateOrUpdateSLZ
 from backend.apps.instance.drivers import get_scheduler_driver
@@ -57,21 +73,17 @@ MESOS_VALUE = ProjectKind.MESOS.value
 
 class Services(viewsets.ViewSet, BaseAPI):
     def get_lastest_ver_by_tempate_id(self, templat_id):
-        """获取模板的最新可见版本
-        """
+        """获取模板的最新可见版本"""
         pass
 
     def get_services_by_cluster_id(self, request, params, project_id, cluster_id, project_kind=MESOS_VALUE):
-        """查询services
-        """
+        """查询services"""
         access_token = request.user.token.access_token
         if project_kind == MESOS_VALUE:
-            client = mesos.MesosClient(
-                access_token, project_id, cluster_id, env=None)
+            client = mesos.MesosClient(access_token, project_id, cluster_id, env=None)
             resp = client.get_services(params)
         else:
-            client = k8s.K8SClient(
-                access_token, project_id, cluster_id, env=None)
+            client = k8s.K8SClient(access_token, project_id, cluster_id, env=None)
             resp = client.get_service(params)
 
         if resp.get("code") != ErrorCode.NoError:
@@ -81,8 +93,7 @@ class Services(viewsets.ViewSet, BaseAPI):
         return ErrorCode.NoError, resp.get("data", [])
 
     def get_service_info(self, request, project_id, cluster_id, namespace, name):  # noqa
-        """获取单个 service 的信息
-        """
+        """获取单个 service 的信息"""
         project_kind = request.project.kind
         access_token = request.user.token.access_token
         params = {
@@ -91,15 +102,13 @@ class Services(viewsets.ViewSet, BaseAPI):
             "name": name,
         }
         if project_kind == MESOS_VALUE:
-            client = mesos.MesosClient(
-                access_token, project_id, cluster_id, env=None)
+            client = mesos.MesosClient(access_token, project_id, cluster_id, env=None)
             resp = client.get_services(params)
             # 跳转到模板集页面需要的参数
             template_cate = 'mesos'
             relate_app_cate = 'application'
         else:
-            client = k8s.K8SClient(
-                access_token, project_id, cluster_id, env=None)
+            client = k8s.K8SClient(access_token, project_id, cluster_id, env=None)
             resp = client.get_service(params)
             template_cate = 'k8s'
             relate_app_cate = 'deployment'
@@ -109,16 +118,14 @@ class Services(viewsets.ViewSet, BaseAPI):
 
         resp_data = resp.get("data", [])
         if not resp_data:
-            return APIResponse({
-                "code": 400,
-                "message": _("查询不到 Service[{}] 的信息").format(name)
-            })
+            return APIResponse({"code": 400, "message": _("查询不到 Service[{}] 的信息").format(name)})
         s_data = resp_data[0].get('data', {})
         labels = s_data.get('metadata', {}).get('labels') or {}
 
         # 获取命名空间的id
         namespace_id = app_utils.get_namespace_id(
-            access_token, project_id, (cluster_id, namespace), cluster_id=cluster_id)
+            access_token, project_id, (cluster_id, namespace), cluster_id=cluster_id
+        )
 
         instance_id = labels.get(LABLE_INSTANCE_ID)
 
@@ -134,16 +141,12 @@ class Services(viewsets.ViewSet, BaseAPI):
         # 获取模板集信息
         template_id = labels.get(LABLE_TEMPLATE_ID)
         try:
-            lasetest_ver = ShowVersion.objects.filter(
-                template_id=template_id).order_by('-updated').first()
+            lasetest_ver = ShowVersion.objects.filter(template_id=template_id).order_by('-updated').first()
             show_version_name = lasetest_ver.name
             version_id = lasetest_ver.real_version_id
             version_entity = VersionedEntity.objects.get(id=version_id)
         except Exception:
-            return APIResponse({
-                "code": 400,
-                "message": _("模板集[id:{}]没有可用的版本，无法更新service").format(template_id)
-            })
+            return APIResponse({"code": 400, "message": _("模板集[id:{}]没有可用的版本，无法更新service").format(template_id)})
 
         entity = version_entity.get_entity()
 
@@ -155,16 +158,14 @@ class Services(viewsets.ViewSet, BaseAPI):
         update_time = annotations.get(ANNOTATIONS_UPDATE_TIME, '')
 
         # k8s 更新需要获取版本号
-        resource_version = s_data.get(
-            'metadata', {}).get('resourceVersion') or ''
+        resource_version = s_data.get('metadata', {}).get('resourceVersion') or ''
 
         web_cache = annotations.get(ANNOTATIONS_WEB_CACHE)
         if not web_cache:
             # 备注中无，则从模板中获取，兼容mesos之前实例化过的模板数据
             _services = entity.get('service') if entity else None
             _services_id_list = _services.split(',') if _services else []
-            _s = Service.objects.filter(
-                id__in=_services_id_list, name=name).first()
+            _s = Service.objects.filter(id__in=_services_id_list, name=name).first()
             try:
                 web_cache = _s.get_config.get('webCache')
             except Exception:
@@ -198,8 +199,7 @@ class Services(viewsets.ViewSet, BaseAPI):
             if not deploy_tag_list:
                 _servs = entity.get('K8sService') if entity else None
                 _serv_id_list = _servs.split(',') if _servs else []
-                _k8s_s = K8sService.objects.filter(
-                    id__in=_serv_id_list, name=name).first()
+                _k8s_s = K8sService.objects.filter(id__in=_serv_id_list, name=name).first()
                 if _k8s_s:
                     deploy_tag_list = _k8s_s.get_deploy_tag_list()
 
@@ -208,42 +208,44 @@ class Services(viewsets.ViewSet, BaseAPI):
         or_labels = s_data.get('metadata', {}).get('labels', {})
         if or_labels:
             pub_keys = PUBLIC_LABELS.keys()
-            show_labels = {key: or_labels[key]
-                           for key in or_labels if key not in pub_keys}
+            show_labels = {key: or_labels[key] for key in or_labels if key not in pub_keys}
             s_data['metadata']['labels'] = show_labels
         if or_annotations:
             pub_an_keys = PUBLIC_ANNOTATIONS.keys()
-            show_annotations = {key: or_annotations[key]
-                                for key in or_annotations if key not in pub_an_keys}
+            show_annotations = {key: or_annotations[key] for key in or_annotations if key not in pub_an_keys}
             remove_key(show_annotations, ANNOTATIONS_WEB_CACHE)
             s_data['metadata']['annotations'] = show_annotations
 
-        return APIResponse({
-            "data": {
-                'service': [{
-                    'name': name,
-                    'app_id': app_weight.keys(),
-                    'app_weight': app_weight,
-                    'deploy_tag_list': deploy_tag_list,
-                    'config': s_data,
-                    'version': version_id,
-                    'lb_name': lb_name,
-                    'instance_id': instance_id,
-                    'namespace_id': namespace_id,
-                    'cluster_id': cluster_id,
-                    'namespace': namespace,
-                    'creator': creator,
-                    'updator': updator,
-                    'create_time': create_time,
-                    'update_time': update_time,
-                    'show_version_name': show_version_name,
-                    'resource_version': resource_version,
-                    'template_id': template_id,
-                    'template_cate': template_cate,
-                    'relate_app_cate': relate_app_cate,
-                }]
+        return APIResponse(
+            {
+                "data": {
+                    'service': [
+                        {
+                            'name': name,
+                            'app_id': app_weight.keys(),
+                            'app_weight': app_weight,
+                            'deploy_tag_list': deploy_tag_list,
+                            'config': s_data,
+                            'version': version_id,
+                            'lb_name': lb_name,
+                            'instance_id': instance_id,
+                            'namespace_id': namespace_id,
+                            'cluster_id': cluster_id,
+                            'namespace': namespace,
+                            'creator': creator,
+                            'updator': updator,
+                            'create_time': create_time,
+                            'update_time': update_time,
+                            'show_version_name': show_version_name,
+                            'resource_version': resource_version,
+                            'template_id': template_id,
+                            'template_cate': template_cate,
+                            'relate_app_cate': relate_app_cate,
+                        }
+                    ]
+                }
             }
-        })
+        )
 
     def get(self, request, project_id):
         """ 获取项目下所有的服务 """
@@ -276,7 +278,8 @@ class Services(viewsets.ViewSet, BaseAPI):
                 continue
             cluster_name = cluster_info.get('name')
             code, cluster_services = self.get_services_by_cluster_id(
-                request, params, project_id, cluster_id, project_kind=project_kind)
+                request, params, project_id, cluster_id, project_kind=project_kind
+            )
             if code != ErrorCode.NoError:
                 continue
             for _s in cluster_services:
@@ -284,10 +287,8 @@ class Services(viewsets.ViewSet, BaseAPI):
                 _s["clusterId"] = cluster_id
                 _s["cluster_id"] = cluster_id
                 _config = _s.get('data', {})
-                annotations = _config.get(
-                    'metadata', {}).get('annotations', {})
-                _s['update_time'] = annotations.get(
-                    ANNOTATIONS_UPDATE_TIME, '')
+                annotations = _config.get('metadata', {}).get('annotations', {})
+                _s['update_time'] = annotations.get(ANNOTATIONS_UPDATE_TIME, '')
                 _s['updator'] = annotations.get(ANNOTATIONS_UPDATOR, '')
                 _s['cluster_name'] = cluster_name
                 _s['status'] = 'Running'
@@ -331,24 +332,17 @@ class Services(viewsets.ViewSet, BaseAPI):
         if data:
             # 检查是否用命名空间的使用权限
             perm = bcs_perm.Namespace(request, project_id, bcs_perm.NO_RES)
-            data = perm.hook_perms(data, ns_id_flag='namespace_id', cluster_id_flag='clusterId',
-                                   ns_name_flag='namespace')
-        return APIResponse({
-            "code": ErrorCode.NoError,
-            "data": {
-                "data": data,
-                "length": len(data)
-            },
-            "message": "ok"
-        })
+            data = perm.hook_perms(
+                data, ns_id_flag='namespace_id', cluster_id_flag='clusterId', ns_name_flag='namespace'
+            )
+        return APIResponse({"code": ErrorCode.NoError, "data": {"data": data, "length": len(data)}, "message": "ok"})
 
     def delete_single_service(self, request, project_id, project_kind, cluster_id, namespace, namespace_id, name):
         username = request.user.username
         access_token = request.user.token.access_token
 
         if project_kind == MESOS_VALUE:
-            client = mesos.MesosClient(
-                access_token, project_id, cluster_id, env=None)
+            client = mesos.MesosClient(access_token, project_id, cluster_id, env=None)
             resp = client.delete_service(namespace, name)
             s_cate = 'service'
         else:
@@ -357,8 +351,7 @@ class Services(viewsets.ViewSet, BaseAPI):
                     "code": 400,
                     "message": _("不允许操作系统命名空间[{}]").format(','.join(K8S_SYS_NAMESPACE)),
                 }
-            client = k8s.K8SClient(
-                access_token, project_id, cluster_id, env=None)
+            client = k8s.K8SClient(access_token, project_id, cluster_id, env=None)
             resp = client.delete_service(namespace, name)
             s_cate = 'K8sService'
 
@@ -367,18 +360,14 @@ class Services(viewsets.ViewSet, BaseAPI):
         if resp.get("code") == ErrorCode.NoError:
             # 删除成功则更新状态
             now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            InstanceConfig.objects.filter(
-                namespace=namespace_id,
-                category=s_cate,
-                name=name,
-            ).update(
+            InstanceConfig.objects.filter(namespace=namespace_id, category=s_cate, name=name,).update(
                 creator=username,
                 updator=username,
                 oper_type=DELETE_INSTANCE,
                 updated=now_time,
                 deleted_time=now_time,
                 is_deleted=True,
-                is_bcs_success=True
+                is_bcs_success=True,
             )
 
         return {
@@ -390,7 +379,8 @@ class Services(viewsets.ViewSet, BaseAPI):
         username = request.user.username
         # 检查用户是否有命名空间的使用权限
         namespace_id = app_utils.get_namespace_id(
-            request.user.token.access_token, project_id, (cluster_id, namespace), cluster_id=cluster_id)
+            request.user.token.access_token, project_id, (cluster_id, namespace), cluster_id=cluster_id
+        )
         app_utils.can_use_namespace(request, project_id, namespace_id)
 
         flag, project_kind = self.get_project_kind(request, project_id)
@@ -407,8 +397,7 @@ class Services(viewsets.ViewSet, BaseAPI):
             resource=name,
             resource_id=0,
             extra=json.dumps({}),
-            description=_("删除Service[{}]命名空间[{}]").format(
-                name, namespace)
+            description=_("删除Service[{}]命名空间[{}]").format(name, namespace),
         ).log_modify(activity_status="succeed" if resp.get("code") == ErrorCode.NoError else "failed")
 
         # 已经删除的，需要将错误信息翻译一下
@@ -416,15 +405,10 @@ class Services(viewsets.ViewSet, BaseAPI):
         is_delete_before = True if 'node does not exist' in message or 'not found' in message else False
         if is_delete_before:
             message = _("{}[命名空间:{}]已经被删除，请手动刷新数据").format(name, namespace)
-        return Response({
-            "code": resp.get("code"),
-            "message": message,
-            "data": {}
-        })
+        return Response({"code": resp.get("code"), "message": message, "data": {}})
 
     def batch_delete_services(self, request, project_id):
-        """批量删除service
-        """
+        """批量删除service"""
         username = request.user.username
         slz = BatchResourceSLZ(data=request.data)
         slz.is_valid(raise_exception=True)
@@ -449,23 +433,28 @@ class Services(viewsets.ViewSet, BaseAPI):
             namespace = _d.get('namespace')
             namespace_id = namespace_dict.get((cluster_id, namespace))
             # 删除service
-            resp = self.delete_single_service(request, project_id, project_kind,
-                                              cluster_id, namespace, namespace_id, name)
+            resp = self.delete_single_service(
+                request, project_id, project_kind, cluster_id, namespace, namespace_id, name
+            )
             # 处理已经删除，但是storage上报数据延迟的问题
             message = resp.get('message', '')
             is_delete_before = True if 'node does not exist' in message or 'not found' in message else False
-            if (resp.get("code") == ErrorCode.NoError):
-                success_list.append({
-                    'name': name,
-                    'desc': _('{}[命名空间:{}]').format(name, namespace),
-                })
+            if resp.get("code") == ErrorCode.NoError:
+                success_list.append(
+                    {
+                        'name': name,
+                        'desc': _('{}[命名空间:{}]').format(name, namespace),
+                    }
+                )
             else:
                 if is_delete_before:
                     message = _('已经被删除，请手动刷新数据')
-                failed_list.append({
-                    'name': name,
-                    'desc': _('{}][命名空间:{}]:{}').format(name, namespace, message),
-                })
+                failed_list.append(
+                    {
+                        'name': name,
+                        'desc': _('{}][命名空间:{}]:{}').format(name, namespace, message),
+                    }
+                )
         code = 0
         message = ''
         # 添加操作审计
@@ -480,7 +469,7 @@ class Services(viewsets.ViewSet, BaseAPI):
                 resource=';'.join(name_list),
                 resource_id=0,
                 extra=json.dumps({}),
-                description=";".join(desc_list)
+                description=";".join(desc_list),
             ).log_modify(activity_status="succeed")
 
         if failed_list:
@@ -496,18 +485,13 @@ class Services(viewsets.ViewSet, BaseAPI):
                 resource=';'.join(name_list),
                 resource_id=0,
                 extra=json.dumps({}),
-                description=message
+                description=message,
             ).log_modify(activity_status="failed")
 
-        return Response({
-            "code": code,
-            "message": message,
-            "data": {}
-        })
+        return Response({"code": code, "message": message, "data": {}})
 
     def update_services(self, request, project_id, cluster_id, namespace, name):
-        """更新 service
-        """
+        """更新 service"""
         access_token = request.user.token.access_token
         flag, project_kind = self.get_project_kind(request, project_id)
         if not flag:
@@ -520,11 +504,9 @@ class Services(viewsets.ViewSet, BaseAPI):
             s_cate = 'service'
         else:
             if namespace in K8S_SYS_NAMESPACE:
-                return Response({
-                    "code": 400,
-                    "message": _("不允许操作系统命名空间[{}]").format(','.join(K8S_SYS_NAMESPACE)),
-                    "data": {}
-                })
+                return Response(
+                    {"code": 400, "message": _("不允许操作系统命名空间[{}]").format(','.join(K8S_SYS_NAMESPACE)), "data": {}}
+                )
             # k8s 相关数据
             slz_class = K8sServiceCreateOrUpdateSLZ
             s_sys_con = K8S_SEVICE_SYS_CONFIG
@@ -558,16 +540,13 @@ class Services(viewsets.ViewSet, BaseAPI):
             application_id_list = apps.split(',') if apps else []
 
             app_id_list = app_weight.keys()
-            service_app_list = Application.objects.filter(
-                id__in=application_id_list, app_id__in=app_id_list)
+            service_app_list = Application.objects.filter(id__in=application_id_list, app_id__in=app_id_list)
 
             lb_name = data.get('lb_name', '')
-            handel_service_db_config(
-                config, service_app_list, app_weight, lb_name, version_id)
+            handel_service_db_config(config, service_app_list, app_weight, lb_name, version_id)
         else:
             logger.exception(f"deploy_tag_list {type(data['deploy_tag_list'])}")
-            handel_k8s_service_db_config(
-                config, data['deploy_tag_list'], version_id, is_upadte=True)
+            handel_k8s_service_db_config(config, data['deploy_tag_list'], version_id, is_upadte=True)
             resource_version = data['resource_version']
             config['metadata']['resourceVersion'] = resource_version
             cluster_version = get_cluster_version(access_token, project_id, cluster_id)
@@ -603,16 +582,11 @@ class Services(viewsets.ViewSet, BaseAPI):
         try:
             config_profile = render_mako_context(resource_config, context)
         except Exception:
-            logger.exception(u"配置文件变量替换出错\nconfig:%s\ncontext:%s" %
-                             (resource_config, context))
+            logger.exception(u"配置文件变量替换出错\nconfig:%s\ncontext:%s" % (resource_config, context))
             raise ValidationError(_("配置文件中有未替换的变量"))
 
         service_name = config.get('metadata', {}).get('name')
-        _config_content = {
-            'name': service_name,
-            'config': json.loads(config_profile),
-            'context': context
-        }
+        _config_content = {'name': service_name, 'config': json.loads(config_profile), 'context': context}
 
         # 更新 service
         config_objs = InstanceConfig.objects.filter(
@@ -640,17 +614,12 @@ class Services(viewsets.ViewSet, BaseAPI):
                 updator=username,
                 oper_type='update',
                 updated=now_time,
-                is_deleted=False
+                is_deleted=False,
             )
         _config_content['instance_config_id'] = _instance_config.id
-        configuration = {
-            namespace_id: {
-                s_cate: [_config_content]
-            }
-        }
+        configuration = {namespace_id: {s_cate: [_config_content]}}
 
-        driver = get_scheduler_driver(
-            access_token, project_id, configuration, request.project.kind)
+        driver = get_scheduler_driver(access_token, project_id, configuration, request.project.kind)
         result = driver.instantiation(is_update=True)
 
         failed = []
@@ -664,19 +633,15 @@ class Services(viewsets.ViewSet, BaseAPI):
             resource=service_name,
             resource_id=_instance_config.id,
             extra=json.dumps(configuration),
-            description=_("更新Service[{}]命名空间[{}]").format(
-                service_name, namespace)
+            description=_("更新Service[{}]命名空间[{}]").format(service_name, namespace),
         ).log_modify(activity_status="failed" if failed else "succeed")
 
         if failed:
-            return Response({
-                "code": 400,
-                "message": _("Service[{}]在命名空间[{}]更新失败，请联系集群管理员解决").format(service_name, namespace),
-                "data": {}
-            })
-        return Response({
-            "code": 0,
-            "message": "OK",
-            "data": {
-            }
-        })
+            return Response(
+                {
+                    "code": 400,
+                    "message": _("Service[{}]在命名空间[{}]更新失败，请联系集群管理员解决").format(service_name, namespace),
+                    "data": {},
+                }
+            )
+        return Response({"code": 0, "message": "OK", "data": {}})

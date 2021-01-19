@@ -26,8 +26,7 @@ from backend.apps.instance.models import VersionInstance, InstanceConfig
 
 # TODO refactor validate_instance_entity
 def generate_instance_entity(req_instance_resources, instance_resources_id_map):
-    """验证前端传过了的待实例化资源是否是该版本的资源
-    """
+    """验证前端传过了的待实例化资源是否是该版本的资源"""
     if not req_instance_resources:
         return instance_resources_id_map
 

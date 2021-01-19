@@ -46,8 +46,8 @@ class PermVerifySLZ(serializers.Serializer):
 
 
 class PermMultiVerifySLZ(serializers.Serializer):
-    """批量接口
-    """
+    """批量接口"""
+
     class ResourceListSLZ(serializers.Serializer):
         policy_code = serializers.ChoiceField(choices=bcs_perm.PermissionMeta.POLICY_LIST)
         resource_type = serializers.ChoiceField(choices=bcs_perm.PERMS_DICT)

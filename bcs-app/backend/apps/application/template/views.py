@@ -22,10 +22,8 @@ from backend.apps.application.template import k8s_views, mesos_views
 
 
 class TemplateSet(BaseAPI, BaseMetric):
-
     def tmpl_set(self, project_id, tmpl_set_id):
-        """获取所有模板集
-        """
+        """获取所有模板集"""
         all_tmpl_set = self.get_filter_tmpl_set(project_id, tmpl_set_id)
         all_tmpl_set_list = all_tmpl_set.values("id", "name")
         return all_tmpl_set_list

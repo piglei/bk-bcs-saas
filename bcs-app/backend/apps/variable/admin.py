@@ -16,10 +16,8 @@ from .models import Variable, ClusterVariable, NameSpaceVariable
 
 
 class VariableAdmin(admin.ModelAdmin):
-    list_display = ('project_id', 'key', 'name',
-                    'category', 'scope')
-    search_fields = ('project_id', 'key', 'name',
-                     'category', 'scope')
+    list_display = ('project_id', 'key', 'name', 'category', 'scope')
+    search_fields = ('project_id', 'key', 'name', 'category', 'scope')
 
 
 admin.site.register(Variable, VariableAdmin)

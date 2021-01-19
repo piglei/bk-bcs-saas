@@ -28,7 +28,6 @@ from backend.accounts import bcs_perm
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **options):
         access_token = bcs_perm.get_access_token().get('access_token')
         if not access_token:

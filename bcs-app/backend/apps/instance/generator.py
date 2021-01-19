@@ -168,8 +168,7 @@ class ProfileGenerator:
         self.resource = None
 
     def handle_db_config(self, db_config):
-        """二次处理db中的配置信息
-        """
+        """二次处理db中的配置信息"""
         return db_config
 
     def get_db_config(self):
@@ -232,8 +231,7 @@ class ProfileGenerator:
         return db_config
 
     def update_config_name(self, resource_config):
-        """实例化后的名称与模板集中的名称保持一致
-        """
+        """实例化后的名称与模板集中的名称保持一致"""
         return resource_config
 
     def get_resource_config(self):
@@ -242,8 +240,7 @@ class ProfileGenerator:
         return update_nested_dict(db_config, sys_config)
 
     def get_ns_variable(self):
-        """获取命名空间相关的变量信息
-        """
+        """获取命名空间相关的变量信息"""
         # 获取命名空间的信息
         resp = paas_cc.get_namespace(self.access_token, self.project_id, self.namespace_id)
         if resp.get("code") != 0:
@@ -270,8 +267,7 @@ class ProfileGenerator:
         return config_profile
 
     def check_configmap_exist(self, resource_config, namespace):
-        """check configmap exist in the namespace
-        """
+        """check configmap exist in the namespace"""
         # get web cache
         web_cache = resource_config.get("webCache") or {}
         volumes = web_cache.get("volumes") or []
@@ -314,8 +310,7 @@ class ProfileGenerator:
         return config_profile
 
     def handle_application_log_config(self, application_id, container_name, resource_kind):
-        """Application 中非标准日志采集
-        """
+        """Application 中非标准日志采集"""
         # 获取业务的 dataid
         cc_app_id = self.context["SYS_CC_APP_ID"]
 
@@ -444,8 +439,7 @@ def handle_k8s_api_version(config_profile, cluster_id, cluster_version, controll
 
 
 class K8sProfileGenerator(ProfileGenerator):
-    """k8s 配置文件，将 json 格式转换为 yaml 格式
-    """
+    """k8s 配置文件，将 json 格式转换为 yaml 格式"""
 
     def __init__(self, resource_id, namespace_id, is_validate=True, **params):
         super().__init__(resource_id, namespace_id, is_validate, **params)
@@ -539,8 +533,7 @@ class ApplicationProfileGenerator(MesosProfileGenerator):
         return self.has_image_secret
 
     def handle_db_config(self, db_config):
-        """添加选取到与关联的Application 的label
-        """
+        """添加选取到与关联的Application 的label"""
         # 删除前端多余的字段
         # 0. 处理自定义网络模式
         db_config = handel_custom_network_mode(db_config)
@@ -764,8 +757,7 @@ class ServiceProfileGenerator(ProfileGenerator):
     resource_sys_config = SEVICE_SYS_CONFIG
 
     def handle_db_config(self, db_config):
-        """添加选取到与关联的Application 的约束条件
-        """
+        """添加选取到与关联的Application 的约束条件"""
         # service 关联的 App，添加 selector 信息
         service_app_list = VersionedEntity.get_related_apps_by_service(self.version_id, self.resource_id)
         app_weight = self.resource.get_app_weight()
@@ -788,8 +780,7 @@ class ConfigMapProfileGenerator(ProfileGenerator):
     resource_sys_config = CONFIGMAP_SYS_CONFIG
 
     def handle_db_config(self, db_config):
-        """文件类型时，需要 base64
-        """
+        """文件类型时，需要 base64"""
         datas = db_config["datas"]
         for _key in datas:
             _type = datas[_key].get("type")
@@ -804,8 +795,7 @@ class SecretProfileGenerator(ProfileGenerator):
     resource_sys_config = SECRET_SYS_CONFIG
 
     def handle_db_config(self, db_config):
-        """数据内容需要 base64
-        """
+        """数据内容需要 base64"""
         datas = db_config["datas"]
         for _key in datas:
             _c = datas[_key]["content"]
@@ -823,8 +813,7 @@ class IngressProfileGenerator(ProfileGenerator):
     resource_sys_config = instance_constants.INGRESS_SYS_CONFIG
 
     def handle_db_config(self, db_config):
-        """针对ingress下的service配置添加namespace
-        """
+        """针对ingress下的service配置添加namespace"""
         spec = db_config["spec"]
         # kind: 包含 tcp/udp/http/https/statefulset
         # format: {
@@ -857,8 +846,7 @@ class MetricProfileGenerator(ProfileGenerator):
     resource_sys_config = {}
 
     def handle_db_config(self, db_config):
-        """组装 metric 的配置文件
-        """
+        """组装 metric 的配置文件"""
         application_id = db_config.get("application_id")
         metric_id = db_config.get("metric_id")
         resource_kind = db_config.get("resource_kind") or "application"
@@ -906,8 +894,7 @@ class MetricProfileGenerator(ProfileGenerator):
 
 
 def handel_custom_network_mode(db_config):
-    """处理自定义网络模式
-    """
+    """处理自定义网络模式"""
     spec = db_config.get("spec", {}).get("template", {}).get("spec", {})
     network_mode = spec.get("networkMode")
     if network_mode == "CUSTOM":
@@ -918,8 +905,7 @@ def handel_custom_network_mode(db_config):
 
 # TODO 这部分逻辑前端可以根据type字段直接处理，不需要bcs-app再做中间转换
 def handle_intersection_item(intersection_item):
-    """处理前端的存储的调度约束
-    """
+    """处理前端的存储的调度约束"""
     new_intersection_item = []
     for _intersection in intersection_item:
         union_data = _intersection.get("unionData")[0]
@@ -997,8 +983,7 @@ def handle_volumes(container_name, volumes, volume_users, config_map_dict, sercr
 
 
 def handle_mesos_env(env_list, env, config_map_dict, secret_dict):
-    """处理前端的环境变量：自定义&configmap&secret
-    """
+    """处理前端的环境变量：自定义&configmap&secret"""
     for _env in env_list:
         _type = _env.get("type")
         _key = _env.get("key")
@@ -1029,8 +1014,7 @@ def handle_mesos_env(env_list, env, config_map_dict, secret_dict):
 def handel_service_db_config(
     db_config, service_app_list, app_weight, lb_name, version_id, is_preview=False, is_validate=True
 ):
-    """处理service的配置数据
-    """
+    """处理service的配置数据"""
     # service 关联的 App，添加 selector 信息
     if service_app_list:
         selector = {}
@@ -1095,8 +1079,7 @@ def handel_service_db_config(
 
 
 def handle_webcache_config(resource_config):
-    """将前端的缓存的数据存储到备注中
-    """
+    """将前端的缓存的数据存储到备注中"""
     web_cache = resource_config.get("webCache", {})
     if web_cache and ("metadata" in resource_config):
         if "annotations" in resource_config["metadata"]:
@@ -1141,8 +1124,7 @@ class K8sSecretGenerator(K8sProfileGenerator):
     resource_sys_config = K8S_SECRET_SYS_CONFIG
 
     def handle_db_config(self, db_config):
-        """type: 默认Opaque, 需要 base64
-        """
+        """type: 默认Opaque, 需要 base64"""
         datas = db_config["data"]
         for _key in datas:
             _c = datas[_key]
@@ -1155,8 +1137,7 @@ class K8sConfigMapGenerator(K8sProfileGenerator):
     resource_sys_config = K8S_CONFIGMAP_SYS_CONFIG
 
     def handle_db_config(self, db_config):
-        """
-        """
+        """"""
         return db_config
 
 
@@ -1165,8 +1146,7 @@ class K8sIngressGenerator(K8sProfileGenerator):
     resource_sys_config = K8S_INGRESS_SYS_CONFIG
 
     def handle_db_config(self, db_config):
-        """
-        """
+        """"""
         # 根据证书获取secretName
         tls_list = db_config.get("spec", {}).get("tls", [])
         for _tls in tls_list:
@@ -1206,8 +1186,7 @@ class K8sServiceGenerator(K8sProfileGenerator):
     resource_sys_config = K8S_SEVICE_SYS_CONFIG
 
     def handle_db_config(self, db_config):
-        """添加选取到与关联的Application 的约束条件
-        """
+        """添加选取到与关联的Application 的约束条件"""
         deploy_tag_list = self.resource.get_deploy_tag_list()
         db_config = handel_k8s_service_db_config(
             db_config, deploy_tag_list, self.version_id, is_preview=self.is_preview, is_validate=self.is_validate
@@ -1224,8 +1203,7 @@ class K8sServiceGenerator(K8sProfileGenerator):
 def handel_k8s_service_db_config(
     db_config, deploy_tag_list, version_id, is_upadte=False, is_preview=False, is_validate=True, variable_dict={}
 ):
-    """  Service 操作单独处理，方便单独更新Service操作
-    """
+    """Service 操作单独处理，方便单独更新Service操作"""
     # selector 信息，为空，则不生成该key
     if not db_config.get("spec", {}).get("selector"):
         remove_key(db_config["spec"], "selector")
@@ -1294,8 +1272,7 @@ class K8sDeploymentGenerator(K8sProfileGenerator):
         return db_config
 
     def handle_db_config(self, db_config):
-        """
-        """
+        """"""
         db_config = self.handle_pod_config(db_config)
 
         # 0.选择器为空则删除key
@@ -1507,8 +1484,7 @@ class K8sDeploymentGenerator(K8sProfileGenerator):
 
 
 def handle_container_env(env_list):
-    """将前端的 env_list 转换为k8s的env
-    """
+    """将前端的 env_list 转换为k8s的env"""
     env = []
     env_from = []
     for _env in env_list:
@@ -1535,8 +1511,7 @@ def handle_container_env(env_list):
 
 
 def handle_container_resources(resources, key, is_preview=False):
-    """资源限制，资源限制后添加单位，且不填则不生成相应的key
-    """
+    """资源限制，资源限制后添加单位，且不填则不生成相应的key"""
     for _type in ["cpu", "memory"]:
         _type_v = resources[key][_type]
         if is_preview:
@@ -1556,8 +1531,7 @@ def handle_container_resources(resources, key, is_preview=False):
 
 
 def handel_container_health_check_type(health, type, is_preview=False, is_validate=True):
-    """健康检查 & 就绪检查
-    """
+    """健康检查 & 就绪检查"""
     if "initialDelaySeconds" in health:
         health["initialDelaySeconds"] = handle_number_var(
             health["initialDelaySeconds"], "initialDelaySeconds", is_preview, is_validate

@@ -26,8 +26,7 @@ def get_name_from_config(config):
 
 
 def is_name_duplicate(resource_name, resource_id, name, version_id):
-    """同一类资源的名称不能重复
-    """
+    """同一类资源的名称不能重复"""
     # 判断新名称与老名称是否一致，如果一致，则不会重复
     model_class = get_model_class_by_resource_name(resource_name)
     try:
@@ -53,8 +52,7 @@ def is_name_duplicate(resource_name, resource_id, name, version_id):
 
 
 def validate_variable_inconfig(config):
-    """校验配置文件中的变量名是否合法
-    """
+    """校验配置文件中的变量名是否合法"""
     search_list = KEY_PATTERN.findall(json.dumps(config))
     search_keys = set(search_list)
     for ikey in search_keys:

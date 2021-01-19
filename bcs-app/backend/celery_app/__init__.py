@@ -31,7 +31,7 @@ app.conf.beat_schedule = {
     'helm_force_sync_repo_tasks': {
         'task': 'backend.bcs_k8s.helm.tasks.force_sync_all_repo',
         'schedule': crontab(hour=3),
-    }
+    },
 }
 
 

@@ -25,11 +25,9 @@ def get_scheduler_driver(access_token, project_id, configuration, project_kind):
     # cluster_type = 'Mesos'
 
     if cluster_type == 'Kubernetes':
-        schduler = k8s.Scheduler(
-            access_token, project_id, configuration, kind="Kubernetes", is_rollback=True)
+        schduler = k8s.Scheduler(access_token, project_id, configuration, kind="Kubernetes", is_rollback=True)
     elif cluster_type == 'Mesos':
-        schduler = mesos.Scheduler(
-            access_token, project_id, configuration, kind="Mesos", is_rollback=True)
+        schduler = mesos.Scheduler(access_token, project_id, configuration, kind="Mesos", is_rollback=True)
     else:
         raise NotImplementedError("only support k8s and mesos")
     return schduler
