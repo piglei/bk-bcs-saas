@@ -374,10 +374,8 @@ def resource_link(base_url, kind, project_code, name, namespace, release_name):
         "/console/bcs/{project_code}/app/{fix_kind}/{resource_name}/{namespace}/{kind}"
         "?name={resource_name}&namespace={namespace}&category={kind}"
     ).format(
-        base_url=base_url,
         kind=kind.lower(),
         fix_kind=fix_kind,
-        instance_name=release_name,
         resource_name=name,
         project_code=project_code,
         namespace=namespace,
