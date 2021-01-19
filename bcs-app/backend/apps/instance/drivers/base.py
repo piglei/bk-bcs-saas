@@ -15,10 +15,10 @@ import logging
 import math
 
 from backend.apps.constants import NodeStatus
-from backend.apps.instance.models import InstanceConfig, VersionInstance, InstanceEvent, MetricConfig
-from backend.components import paas_cc
-from backend.utils.exceptions import Rollback, APIError, ConfigError
 from backend.apps.instance.constants import EventType, InsState
+from backend.apps.instance.models import InstanceConfig, InstanceEvent, MetricConfig, VersionInstance
+from backend.components import paas_cc
+from backend.utils.exceptions import APIError, ConfigError, Rollback
 
 logger = logging.getLogger(__name__)
 

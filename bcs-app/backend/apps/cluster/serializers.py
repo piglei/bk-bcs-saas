@@ -15,18 +15,18 @@ import json
 import time
 
 import arrow
-
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 
 from backend.apps import constants
-from backend.apps.cluster.models import NodeLabel, ClusterInstallLog, NodeUpdateLog, NodeStatus
-from backend.components import paas_cc, data as data_api
+from backend.apps.cluster import constants as cluster_constants
+from backend.apps.cluster.models import ClusterInstallLog, NodeLabel, NodeStatus, NodeUpdateLog
+from backend.components import data as data_api
+from backend.components import paas_cc
 from backend.utils import cc
 from backend.utils.errcodes import ErrorCode
 from backend.utils.error_codes import error_codes
-from backend.apps.cluster import constants as cluster_constants
 from backend.utils.exceptions import ResNotFoundError
 
 

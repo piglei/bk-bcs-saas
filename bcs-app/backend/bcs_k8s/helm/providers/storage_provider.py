@@ -12,9 +12,10 @@
 # specific language governing permissions and limitations under the License.
 #
 import logging
-import boto
-from .rgw_admin import RGWAdminClient
 
+import boto
+
+from .rgw_admin import RGWAdminClient
 
 logger = logging.getLogger(__name__)
 

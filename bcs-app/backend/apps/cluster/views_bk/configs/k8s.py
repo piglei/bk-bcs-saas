@@ -22,10 +22,10 @@ from urllib.parse import urlparse
 
 from django.conf import settings
 
-from backend.apps.cluster.utils import gen_hostname
 from backend.apps.cluster import constants
-from backend.utils.error_codes import error_codes
+from backend.apps.cluster.utils import gen_hostname
 from backend.bcs_k8s.bke_client import BCSClusterClient
+from backend.utils.error_codes import error_codes
 
 logger = logging.getLogger(__name__)
 

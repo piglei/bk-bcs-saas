@@ -13,8 +13,7 @@
 #
 import io
 
-from . import diff
-from . import parser
+from . import diff, parser
 
 """
 a simple wrapper for compare two release,

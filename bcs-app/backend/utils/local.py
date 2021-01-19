@@ -14,8 +14,10 @@
 """全局相关
 """
 import uuid
+
 from django.conf import settings
-from werkzeug.local import Local as _Local, release_local
+from werkzeug.local import Local as _Local
+from werkzeug.local import release_local
 
 _local = _Local()
 

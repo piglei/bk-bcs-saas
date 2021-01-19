@@ -14,8 +14,9 @@
 """
 模板实例化过程中用到的通用方法
 """
-import copy
 import collections
+import copy
+
 from django.template import Context, Template
 
 

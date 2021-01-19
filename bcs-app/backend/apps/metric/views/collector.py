@@ -14,10 +14,10 @@
 import logging
 
 from django.conf import settings
+from django.utils.translation import ugettext as _
 from rest_framework import viewsets
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
-from django.utils.translation import ugettext as _
 
 from backend.accounts import bcs_perm
 from backend.apps.configuration.models import POD_RES_LIST
@@ -27,11 +27,11 @@ from backend.apps.instance.constants import InsState
 from backend.apps.instance.models import InstanceConfig
 from backend.apps.metric import serializers, tasks
 from backend.apps.metric.models import Metric as MetricModel
+from backend.apps.metric.utils import get_metric_instances
 from backend.components import paas_cc
 from backend.utils.error_codes import error_codes
 from backend.utils.renderers import BKAPIRenderer
 from backend.utils.response import BKAPIResponse
-from backend.apps.metric.utils import get_metric_instances
 
 logger = logging.getLogger(__name__)
 PAUSE = 'pause'

@@ -19,8 +19,8 @@ from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext_lazy as _
 
 from backend.accounts import bcs_perm
-from backend.components import paas_cc
 from backend.bcs_k8s.helm.providers import repo_provider
+from backend.components import paas_cc
 
 
 class Command(BaseCommand):

@@ -12,20 +12,19 @@
 # specific language governing permissions and limitations under the License.
 #
 import json
-import time
 import logging
+import time
 from datetime import datetime, timedelta
 
-from django.conf import settings
 from celery import shared_task
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from backend.components.bcs import mesos, k8s
-from backend.utils.errcodes import ErrorCode
-from backend.apps.instance.models import InstanceConfig, InstanceEvent, VersionInstance
-from backend.apps.instance.constants import EventType
 from backend.apps.application.constants import FUNC_MAP, MESOS_FUNC_MAP
-from backend.apps.instance.constants import InsState
+from backend.apps.instance.constants import EventType, InsState
+from backend.apps.instance.models import InstanceConfig, InstanceEvent, VersionInstance
+from backend.components.bcs import k8s, mesos
+from backend.utils.errcodes import ErrorCode
 
 DEFAULT_RESPONSE = {"code": 0}
 POLLING_INTERVAL_SECONDS = getattr(settings, "POLLING_INTERVAL_SECONDS", 5)

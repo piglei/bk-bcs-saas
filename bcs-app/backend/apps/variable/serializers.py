@@ -11,21 +11,22 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import re
 import logging
+import re
 
 from django.utils.functional import cached_property
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 
-from .utils import get_variable_quote_num
-from .constants import VariableScope, VariableCategory
-from backend.apps.variable.models import Variable
-from backend.apps.instance.serializers import InstanceNamespaceSLZ
 from backend.apps.configuration.constants import VARIABLE_PATTERN
+from backend.apps.instance.serializers import InstanceNamespaceSLZ
+from backend.apps.variable.models import Variable
 from backend.resources.cluster.utils import get_clusters
 from backend.resources.namespace.utils import get_namespaces
+
+from .constants import VariableCategory, VariableScope
+from .utils import get_variable_quote_num
 
 logger = logging.getLogger(__name__)
 

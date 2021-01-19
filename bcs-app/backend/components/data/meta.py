@@ -14,13 +14,13 @@
 """
 数据平台元数据相关API
 """
-import logging
 import json
+import logging
 
-from backend.utils import cache
 from backend.components.utils import http_get
-from .constant import DATA_API_V3_PREFIX, APP_CODE, APP_SECRET
+from backend.utils import cache
 
+from .constant import APP_CODE, APP_SECRET, DATA_API_V3_PREFIX
 
 logger = logging.getLogger(__name__)
 

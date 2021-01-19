@@ -17,8 +17,8 @@
 import base64
 import logging
 
-from django.utils.encoding import smart_bytes, smart_text
 from django.conf import settings
+from django.utils.encoding import smart_bytes, smart_text
 
 from backend.components.utils import http_post
 from backend.utils.error_codes import bk_error_codes

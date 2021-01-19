@@ -12,8 +12,8 @@
 # specific language governing permissions and limitations under the License.
 #
 from django.conf.urls import url
-from . import views
 
+from . import views
 
 PROJECT_ID = "(?P<project_id>[\w\-]+)"
 REPO_NAME = "(?P<repo_name>[a-z0-9_-]{1,32})"

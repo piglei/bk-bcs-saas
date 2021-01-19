@@ -11,17 +11,18 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import logging
 import copy
-from dataclasses import dataclass
+import logging
 import re
+from dataclasses import dataclass
 
-from rest_framework.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.exceptions import ValidationError
+
+from backend.utils.basic import getitems
 
 from . import dpath
 from .constants import RESOURCE_FILEDS, RESOURCE_KINDS_FOR_MONITOR_INJECTOR
-from backend.utils.basic import getitems
 
 logger = logging.getLogger(__name__)
 

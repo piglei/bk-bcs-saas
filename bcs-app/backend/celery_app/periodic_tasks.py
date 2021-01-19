@@ -13,10 +13,10 @@
 #
 import logging
 import time
-import six
-
-from celery import shared_task
 from enum import Enum
+
+import six
+from celery import shared_task
 
 logger = logging.getLogger(__name__)
 

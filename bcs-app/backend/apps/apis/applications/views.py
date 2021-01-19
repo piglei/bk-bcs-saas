@@ -11,51 +11,48 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import re
 import json
-import yaml
 import logging
+import re
 from datetime import datetime
 
-from django.http import JsonResponse
-from django.db.models import Q
+import yaml
 from django.conf import settings
+from django.db.models import Q
+from django.http import JsonResponse
 
-from backend.utils import FancyDict
-from backend.apps.apis.base_views import BaseAPIViews, APIUser
-from backend.apps.apis.utils import check_user_project, skip_authentication
-from backend.apps.apis.applications import serializers
-from backend.apps.configuration.models import Template, VersionedEntity, ShowVersion
-from backend.apps.instance.models import VersionInstance, InstanceConfig
-from backend.apps.apis.constants import CATEGORY_MODULE_MAP
-from backend.utils.error_codes import error_codes
-from backend.apps.application import views as app_views
-from backend.components.bcs.mesos import MesosClient
-from backend.components.bcs.k8s import K8SClient
-from backend.apps.application.constants import FUNC_MAP, REVERSE_CATEGORY_MAP, UNNORMAL_STATUS, NORMAL_STATUS
-from backend.apps.application import utils
-from backend.apps.configuration.models import MODULE_DICT
-from backend.apps.configuration.utils import check_var_by_config
-from backend.apps.variable.models import Variable
-from backend.components import paas_cc
-from backend.apps.application import constants as app_constants
-from backend.utils.errcodes import ErrorCode
-from backend.apps import constants
-from backend.apps.instance.constants import InsState
-from backend.apps.instance import utils as inst_utils
-from backend.apps.variable.models import NameSpaceVariable
-from backend.apps.instance.utils import (
-    validate_version_id,
-    handle_all_config,
-    validate_ns_by_tempalte_id,
-    validate_lb_info_by_version_id,
-    validate_instance_entity,
-)
-from backend.apps.instance.serializers import VersionInstanceCreateOrUpdateSLZ
-from backend.activity_log import client
-from backend.apps.datalog.utils import create_data_project, create_and_start_standard_data_flow
-from backend.apps.instance.serializers import VariableNamespaceSLZ
 from backend.accounts import bcs_perm
+from backend.activity_log import client
+from backend.apps import constants
+from backend.apps.apis.applications import serializers
+from backend.apps.apis.base_views import APIUser, BaseAPIViews
+from backend.apps.apis.constants import CATEGORY_MODULE_MAP
+from backend.apps.apis.utils import check_user_project, skip_authentication
+from backend.apps.application import constants as app_constants
+from backend.apps.application import utils
+from backend.apps.application import views as app_views
+from backend.apps.application.constants import FUNC_MAP, NORMAL_STATUS, REVERSE_CATEGORY_MAP, UNNORMAL_STATUS
+from backend.apps.configuration.models import MODULE_DICT, ShowVersion, Template, VersionedEntity
+from backend.apps.configuration.utils import check_var_by_config
+from backend.apps.datalog.utils import create_and_start_standard_data_flow, create_data_project
+from backend.apps.instance import utils as inst_utils
+from backend.apps.instance.constants import InsState
+from backend.apps.instance.models import InstanceConfig, VersionInstance
+from backend.apps.instance.serializers import VariableNamespaceSLZ, VersionInstanceCreateOrUpdateSLZ
+from backend.apps.instance.utils import (
+    handle_all_config,
+    validate_instance_entity,
+    validate_lb_info_by_version_id,
+    validate_ns_by_tempalte_id,
+    validate_version_id,
+)
+from backend.apps.variable.models import NameSpaceVariable, Variable
+from backend.components import paas_cc
+from backend.components.bcs.k8s import K8SClient
+from backend.components.bcs.mesos import MesosClient
+from backend.utils import FancyDict
+from backend.utils.errcodes import ErrorCode
+from backend.utils.error_codes import error_codes
 
 logger = logging.getLogger(__name__)
 PIPELINE_DEFAULT_USER = settings.PIPELINE_DEFAULT_USER

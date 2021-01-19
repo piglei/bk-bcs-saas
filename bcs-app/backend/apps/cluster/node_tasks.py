@@ -16,12 +16,12 @@ import json
 from celery import shared_task
 from django.utils.translation import ugettext_lazy as _
 
+from backend.apps import constants
+from backend.apps.cluster import models
+from backend.apps.cluster.constants import K8S_SKIP_NS_LIST
+from backend.components import paas_cc
 from backend.components.bcs import k8s, mesos
 from backend.utils.errcodes import ErrorCode
-from backend.apps.cluster import models
-from backend.apps import constants
-from backend.components import paas_cc
-from backend.apps.cluster.constants import K8S_SKIP_NS_LIST
 
 
 @shared_task

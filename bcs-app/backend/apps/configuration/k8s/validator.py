@@ -13,11 +13,12 @@
 #
 import re
 
-from rest_framework.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.exceptions import ValidationError
 
-from backend.utils.basic import getitems
 from backend.apps.configuration import models
+from backend.utils.basic import getitems
+
 from .constants import CONFIG_SCHEMA_MAP
 
 K8S_NAME_REGEX = re.compile(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$')

@@ -16,24 +16,25 @@ import logging
 import traceback
 
 from django.db import models
-from picklefield.fields import PickledObjectField
-from jsonfield import JSONField
-from rest_framework.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from jsonfield import JSONField
+from picklefield.fields import PickledObjectField
+from rest_framework.exceptions import ValidationError
 
-from backend.activity_log.client import get_log_client_by_activity_log_id
-from backend.bcs_k8s.helm.models import Chart, ChartRelease
-from backend.bcs_k8s.helm.constants import KEEP_TEMPLATE_UNCHANGED, DEFAULT_VALUES_FILE_NAME
-from backend.bcs_k8s.diff.revision import AppRevisionDiffer
-from .managers import AppManager
-from .deployer import AppDeployer
 from backend.activity_log import client
-from . import bcs_info_injector
-from backend.bcs_k8s.kubehelm import exceptions as helm_exceptions
+from backend.activity_log.client import get_log_client_by_activity_log_id
 from backend.apps.whitelist_bk import enable_helm_v3
 from backend.bcs_k8s import utils as bcs_helm_utils
 from backend.bcs_k8s.app.utils import get_cc_app_id
+from backend.bcs_k8s.diff.revision import AppRevisionDiffer
+from backend.bcs_k8s.helm.constants import DEFAULT_VALUES_FILE_NAME, KEEP_TEMPLATE_UNCHANGED
+from backend.bcs_k8s.helm.models import Chart, ChartRelease
+from backend.bcs_k8s.kubehelm import exceptions as helm_exceptions
+
+from . import bcs_info_injector
+from .deployer import AppDeployer
+from .managers import AppManager
 
 logger = logging.getLogger(__name__)
 
@@ -339,7 +340,7 @@ class App(models.Model):
         valuefile_name=DEFAULT_VALUES_FILE_NAME,
         **kwargs
     ):
-        from .tasks import upgrade_app, sync_or_async
+        from .tasks import sync_or_async, upgrade_app
 
         # if self.transitioning_on:
         #    raise ValidationError("helm app is on transitioning, please try a later.")

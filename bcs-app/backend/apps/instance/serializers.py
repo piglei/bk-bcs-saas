@@ -13,8 +13,9 @@
 #
 from rest_framework import serializers
 
-from .models import VersionInstance
 from backend.apps.configuration.utils import to_bcs_res_name
+
+from .models import VersionInstance
 
 
 class InstanceNamespaceSLZ(serializers.Serializer):

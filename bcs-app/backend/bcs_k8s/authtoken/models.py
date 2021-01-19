@@ -11,14 +11,13 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
+import rest_framework.authtoken.models
 from django.conf import settings
 from django.db import models
+from django.utils.crypto import get_random_string
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from django.utils.crypto import get_random_string
-
 from jsonfield import JSONField
-import rest_framework.authtoken.models
 
 from .managers import TokenManager
 from .providers import provider_choice

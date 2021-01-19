@@ -14,12 +14,12 @@
 """
 Harbor 仓库API
 """
-import logging
 import json
+import logging
 
 from django.conf import settings
 
-from backend.utils.requests import http_post, http_get
+from backend.utils.requests import http_get, http_post
 
 logger = logging.getLogger(__name__)
 

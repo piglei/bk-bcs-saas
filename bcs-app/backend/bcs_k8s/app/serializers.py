@@ -11,36 +11,35 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import json
 import datetime
+import json
 import subprocess
 
 from django.conf import settings
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError, ParseError
 from django.utils.translation import ugettext_lazy as _
+from rest_framework import serializers
+from rest_framework.exceptions import ParseError, ValidationError
 
-from backend.utils.error_codes import error_codes
-from backend.components import paas_cc
-
-from .models import App
+from backend.bcs_k8s import utils as bcs_helm_utils
+from backend.bcs_k8s.diff.diff import simple_diff
+from backend.bcs_k8s.diff.parser import parse
+from backend.bcs_k8s.helm.bcs_variable import collect_system_variable, get_valuefile_with_bcs_variable_injected
+from backend.bcs_k8s.helm.constants import DEFAULT_VALUES_FILE_NAME, KEEP_TEMPLATE_UNCHANGED, RESOURCE_NAME_REGEX
 from backend.bcs_k8s.helm.models import ChartVersion
 from backend.bcs_k8s.helm.serializers import ChartReleaseSLZ, RepoSLZ
-from backend.bcs_k8s.kubehelm.helm import KubeHelmClient
-from backend.bcs_k8s.kubehelm import exceptions as helm_exceptions
-from backend.bcs_k8s.diff.parser import parse
-from backend.bcs_k8s.diff.diff import simple_diff
-from backend.utils.serializers import YamlField, HelmValueField
-from backend.utils.tempfile import save_to_temporary_dir
-from backend.utils.client import make_kubectl_client, get_bcs_client
-from backend.bcs_k8s.helm.constants import KEEP_TEMPLATE_UNCHANGED, RESOURCE_NAME_REGEX, DEFAULT_VALUES_FILE_NAME
 from backend.bcs_k8s.helm.utils.util import merge_rancher_answers
+from backend.bcs_k8s.kubehelm import exceptions as helm_exceptions
+from backend.bcs_k8s.kubehelm.helm import KubeHelmClient
 from backend.bcs_k8s.permissions import check_cluster_perm
-from backend.bcs_k8s.helm.bcs_variable import collect_system_variable, get_valuefile_with_bcs_variable_injected
+from backend.components import paas_cc
+from backend.utils.client import get_bcs_client, make_kubectl_client
+from backend.utils.error_codes import error_codes
+from backend.utils.serializers import HelmValueField, YamlField
+from backend.utils.tempfile import save_to_temporary_dir
+
+from . import bcs_info_injector, utils
 from .deployer import AppDeployer
-from . import bcs_info_injector
-from . import utils
-from backend.bcs_k8s import utils as bcs_helm_utils
+from .models import App
 
 
 def preview_parse(manifest, namespace):

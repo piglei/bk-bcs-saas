@@ -12,6 +12,7 @@
 # specific language governing permissions and limitations under the License.
 #
 from django.contrib import admin
+
 from .models import ProjectDataInfo
 
 

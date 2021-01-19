@@ -19,9 +19,8 @@ DONE:
 
 TODO:
 """
+from backend.apps.configuration.constants import FILE_DIR_PATTERN, NUM_VAR_PATTERN
 from backend.apps.instance.funutils import update_nested_dict
-from backend.apps.configuration.constants import NUM_VAR_PATTERN, FILE_DIR_PATTERN
-
 
 # 资源名称
 K8S_RES_NAME_PATTERN = "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"

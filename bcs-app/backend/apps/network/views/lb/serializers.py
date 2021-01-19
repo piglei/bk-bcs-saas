@@ -13,9 +13,9 @@
 #
 import json
 
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 
 from backend.apps.network.models import MesosLoadBlance as MesosLoadBalancer
 

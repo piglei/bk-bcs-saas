@@ -14,16 +14,17 @@
 import json
 import logging
 
-from django.utils.crypto import get_random_string
 from django.db import models
-from rest_framework.serializers import ValidationError
 from django.db.models import Max
+from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.serializers import ValidationError
 
-from backend.bcs_k8s.helm.constants import TEMPORARY_APP_ID, DEFAULT_VALUES_FILE_NAME
-from backend.bcs_k8s.helm.models import ChartVersionSnapshot, ChartRelease
-from .deployer import AppDeployer
 from backend.activity_log import client
+from backend.bcs_k8s.helm.constants import DEFAULT_VALUES_FILE_NAME, TEMPORARY_APP_ID
+from backend.bcs_k8s.helm.models import ChartRelease, ChartVersionSnapshot
+
+from .deployer import AppDeployer
 
 logger = logging.getLogger(__name__)
 

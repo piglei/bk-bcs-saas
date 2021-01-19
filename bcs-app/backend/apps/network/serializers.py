@@ -13,15 +13,15 @@
 #
 import re
 
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 
+from backend.apps.configuration.serializers import RE_NAME
+from backend.apps.network.constants import K8S_LB_NAMESPACE, MESOS_LB_NAMESPACE
 from backend.apps.network.models import K8SLoadBlance
 from backend.utils.error_codes import error_codes
-from backend.apps.configuration.serializers import RE_NAME
-from backend.apps.network.constants import MESOS_LB_NAMESPACE, K8S_LB_NAMESPACE
-from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class BatchResourceSLZ(serializers.Serializer):

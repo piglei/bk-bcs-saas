@@ -17,8 +17,8 @@ Usage: python manage.py init_mesos_image_secret -n '合法的 access_token'
 from django.core.management.base import BaseCommand
 
 from backend.apps import constants
-from backend.components import paas_auth, paas_cc
 from backend.apps.configuration.namespace.views import NamespaceBase
+from backend.components import paas_auth, paas_cc
 
 
 class Command(BaseCommand):

@@ -12,8 +12,8 @@
 # specific language governing permissions and limitations under the License.
 #
 import arrow
-from rest_framework import serializers
 from django.utils.translation import ugettext_lazy as _
+from rest_framework import serializers
 
 from backend.activity_log.models import UserActivityLog
 

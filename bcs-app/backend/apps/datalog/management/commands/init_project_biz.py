@@ -22,9 +22,9 @@ python manage.py init_project_biz -n IAnlbGg31xLXHdfEYOjpYiT4toebWH
 """
 from django.core.management.base import BaseCommand
 
+from backend.accounts import bcs_perm
 from backend.apps.datalog.models import ProjectDataInfo
 from backend.components import paas_cc
-from backend.accounts import bcs_perm
 
 
 class Command(BaseCommand):

@@ -13,14 +13,15 @@
 #
 """变量管理功能
 """
-import logging
 import json
+import logging
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from backend.apps.configuration.models import BaseModel
-from .constants import VariableScope, VariableCategory, ALL_PROJECTS
+
+from .constants import ALL_PROJECTS, VariableCategory, VariableScope
 
 logger = logging.getLogger(__name__)
 

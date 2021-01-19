@@ -15,10 +15,9 @@
 TODO: 模板相关的展示查询
 """
 from backend.apps.application import constants
-
 from backend.apps.application.base.base import BaseAPI, BaseMetric
-from backend.apps.application.utils import APIResponse
 from backend.apps.application.template import k8s_views, mesos_views
+from backend.apps.application.utils import APIResponse
 
 
 class TemplateSet(BaseAPI, BaseMetric):

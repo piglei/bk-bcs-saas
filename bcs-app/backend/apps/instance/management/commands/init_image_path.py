@@ -19,10 +19,10 @@ paas/01b6ad17aafc49dcb5cb1aa3d6ee6e01/ -> paas_test/job/,paas/job/
 paas/public/ -> paas_test/public/   : 测试环境
 """
 import requests
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from django.conf import settings
-from backend.apps.configuration.models import Application, VersionedEntity, Template
+from backend.apps.configuration.models import Application, Template, VersionedEntity
 
 
 class Command(BaseCommand):

@@ -14,8 +14,8 @@
 from django.conf import settings
 
 from backend.components import utils
-from backend.utils.decorators import parse_response_data
 from backend.utils import cache
+from backend.utils.decorators import parse_response_data
 
 HEADERS = {"X-BK-APP-CODE": settings.APP_ID, "X-BK-APP-SECRET": settings.APP_TOKEN}
 

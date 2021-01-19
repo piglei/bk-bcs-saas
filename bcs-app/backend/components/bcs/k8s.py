@@ -16,10 +16,10 @@ import logging
 
 from django.conf import settings
 from django.utils.functional import cached_property
+from django.utils.translation import ugettext_lazy as _
 from kubernetes import client
 from kubernetes.client.rest import ApiException
 from rest_framework.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 
 from backend.components import paas_cc
 from backend.components.bcs import BCSClientBase

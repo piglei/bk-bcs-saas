@@ -18,8 +18,8 @@ from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.shortcuts import force_text
 
-from backend.utils.local import local
 from backend.activity_log.client import UserActivityLogClient
+from backend.utils.local import local
 
 logger = logging.getLogger(__name__)
 

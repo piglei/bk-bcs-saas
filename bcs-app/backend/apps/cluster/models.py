@@ -132,8 +132,9 @@ class GcloudPollingTask(models.Model):
             return {}
 
     def activate_polling(self):
-        from backend.celery_app.tasks import cluster
         from celery import chain
+
+        from backend.celery_app.tasks import cluster
 
         chain(
             cluster.polling_task.s(self.__class__.__name__, self.pk), cluster.chain_polling_bke_status.s()
@@ -161,8 +162,9 @@ class ClusterInstallLog(GcloudPollingTask):
 
     def cluster_check_and_init_polling(self):
         """集群前置检查&初始化"""
-        from backend.celery_app.tasks import cluster
         from celery import chain
+
+        from backend.celery_app.tasks import cluster
 
         chain(
             cluster.polling_initial_task.s(self.__class__.__name__, self.pk),
@@ -174,8 +176,9 @@ class ClusterInstallLog(GcloudPollingTask):
 
     def cluster_so_and_init_polling(self):
         """集群so&初始化"""
-        from backend.celery_app.tasks import cluster
         from celery import chain
+
+        from backend.celery_app.tasks import cluster
 
         chain(
             cluster.polling_so_init.s(None, self.pk, self.__class__.__name__),
@@ -209,8 +212,9 @@ class NodeUpdateLog(GcloudPollingTask):
 
     def node_check_and_init_polling(self):
         """节点前置检查&初始化"""
-        from backend.celery_app.tasks import cluster
         from celery import chain
+
+        from backend.celery_app.tasks import cluster
 
         chain(
             cluster.polling_initial_task.s(self.__class__.__name__, self.pk),
@@ -223,8 +227,9 @@ class NodeUpdateLog(GcloudPollingTask):
 
     def node_so_and_init_polling(self):
         """节点so&初始化"""
-        from backend.celery_app.tasks import cluster
         from celery import chain
+
+        from backend.celery_app.tasks import cluster
 
         chain(
             cluster.polling_so_init.s(None, self.pk, self.__class__.__name__),
@@ -240,8 +245,9 @@ class NodeUpdateLog(GcloudPollingTask):
 
     def node_force_delete_polling(self):
         """强制删除节点"""
-        from backend.celery_app.tasks import cluster
         from celery import chain
+
+        from backend.celery_app.tasks import cluster
 
         chain(
             cluster.force_delete_node.s(self.__class__.__name__, self.pk),

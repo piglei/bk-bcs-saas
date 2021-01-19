@@ -11,40 +11,37 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import logging
-import json
 import base64
+import json
+import logging
 from datetime import datetime
 
 import yaml
-
-from rest_framework import views
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from rest_framework import views
 from rest_framework.exceptions import ValidationError
 
-from backend.components.bcs import mesos, bcs_common_api
-from backend.utils.errcodes import ErrorCode
-from backend.apps.application.utils import APIResponse, image_handler
-from backend.components import paas_cc
-from backend.apps import constants
-from backend.apps.instance.models import InstanceConfig
-from backend.utils.error_codes import error_codes, ErrorCode as ErrorCodeCls
-from backend.components.bcs.mesos import MesosClient
-from backend.components.bcs.k8s import K8SClient
-from backend.components.bcs.bcs_common_api import BCSClient
-from backend.apps.instance.models import InstanceEvent
-from backend.apps.instance.constants import EventType, InsState
-from backend.apps.application.constants import FUNC_MAP, NOT_TMPL_SOURCE_TYPE, OWENER_REFERENCE_MAP
-from backend.celery_app.tasks.application import delete_instance_task
-from backend.apps.application.utils import cluster_env
 from backend.accounts import bcs_perm
-from backend.apps.configuration.models import Template
-from backend.apps.application.drivers import BCSDriver
+from backend.apps import constants
 from backend.apps.application.common_views.serializers import BaseNotTemplateInstanceParamsSLZ
+from backend.apps.application.constants import FUNC_MAP, NOT_TMPL_SOURCE_TYPE, OWENER_REFERENCE_MAP
+from backend.apps.application.drivers import BCSDriver
+from backend.apps.application.utils import APIResponse, cluster_env, image_handler, retry_requests
 from backend.apps.configuration.constants import K8sResourceName
-from backend.apps.application.utils import retry_requests
+from backend.apps.configuration.models import Template
+from backend.apps.instance.constants import EventType, InsState
+from backend.apps.instance.models import InstanceConfig, InstanceEvent
+from backend.celery_app.tasks.application import delete_instance_task
+from backend.components import paas_cc
+from backend.components.bcs import bcs_common_api, mesos
+from backend.components.bcs.bcs_common_api import BCSClient
+from backend.components.bcs.k8s import K8SClient
+from backend.components.bcs.mesos import MesosClient
 from backend.utils.basic import getitems
+from backend.utils.errcodes import ErrorCode
+from backend.utils.error_codes import ErrorCode as ErrorCodeCls
+from backend.utils.error_codes import error_codes
 
 logger = logging.getLogger(__name__)
 

@@ -12,15 +12,15 @@
 # specific language governing permissions and limitations under the License.
 #
 import json
+
 from django.utils.translation import ugettext_lazy as _
 
-from backend.apps.application.utils import APIResponse
 from backend.apps.application.base_views import BaseAPI, error_codes
-from backend.apps.configuration.models import Template
-from backend.apps.instance.models import VersionInstance, InstanceConfig, InstanceEvent, MetricConfig
-from backend.apps.application.utils import cluster_env
 from backend.apps.application.constants import CATEGORY_MAP
+from backend.apps.application.utils import APIResponse, cluster_env
+from backend.apps.configuration.models import Template
 from backend.apps.instance.constants import InsState
+from backend.apps.instance.models import InstanceConfig, InstanceEvent, MetricConfig, VersionInstance
 
 
 class BaseFilter(BaseAPI):

@@ -14,10 +14,10 @@
 """Operating kubernetes with kubectl command
 """
 import json
-import time
-import tempfile
-import subprocess
 import logging
+import subprocess
+import tempfile
+import time
 from pathlib import Path
 
 from .exceptions import KubectlError, KubectlExecutionError

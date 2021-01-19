@@ -11,16 +11,16 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import time
 import logging
-from datetime import timedelta, datetime
+import time
+from datetime import datetime, timedelta
 
 from celery import shared_task
 
-from backend.components.paas_cc import get_namespace_list
-from backend.apps.instance.utils import get_app_status
-from backend.apps.instance.models import InstanceConfig, VersionInstance
 from backend.apps.instance.constants import InsState
+from backend.apps.instance.models import InstanceConfig, VersionInstance
+from backend.apps.instance.utils import get_app_status
+from backend.components.paas_cc import get_namespace_list
 
 logger = logging.getLogger(__name__)
 POLLING_TIMEOUT = timedelta(seconds=30)

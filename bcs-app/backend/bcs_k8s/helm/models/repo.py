@@ -15,12 +15,11 @@ import json
 
 from django.db import models
 from django.utils import timezone
-
 from jsonfield import JSONField
 
 from backend.utils.models import BaseTSModel
 
-from .managers import RepositoryManager, RepositoryAuthManager
+from .managers import RepositoryAuthManager, RepositoryManager
 
 
 class Repository(BaseTSModel):

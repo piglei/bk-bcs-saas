@@ -16,9 +16,8 @@ import logging
 
 from django.utils.translation import ugettext_lazy as _
 
-from backend.utils.error_codes import error_codes, bk_error_codes
 from backend.components.enterprise.harbor import HarborClient
-
+from backend.utils.error_codes import bk_error_codes, error_codes
 
 logger = logging.getLogger(__name__)
 

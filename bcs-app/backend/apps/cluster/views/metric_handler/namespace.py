@@ -19,7 +19,7 @@ from backend.apps import constants
 from backend.apps.configuration.models import Template
 from backend.apps.instance.constants import InsState
 from backend.apps.instance.models import InstanceConfig, VersionInstance
-from backend.components import paas_cc, bcs
+from backend.components import bcs, paas_cc
 from backend.utils.errcodes import ErrorCode
 from backend.utils.error_codes import error_codes
 

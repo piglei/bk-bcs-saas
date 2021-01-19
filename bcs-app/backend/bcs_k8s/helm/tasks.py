@@ -16,15 +16,16 @@ import datetime
 import logging
 
 from celery import shared_task
-from natsort import natsorted
 from django.utils import timezone
+from natsort import natsorted
 
-from .models.repo import Repository
-from .models.chart import Chart, ChartVersion
-from .utils.repo import prepareRepoCharts, InProcessSign
 from backend.apps.whitelist_bk import enable_incremental_sync_chart_repo
 from backend.bcs_k8s.helm.utils.repo_bk import get_incremental_charts_and_hash_value
 from backend.utils.basic import normalize_time
+
+from .models.chart import Chart, ChartVersion
+from .models.repo import Repository
+from .utils.repo import InProcessSign, prepareRepoCharts
 
 logger = logging.getLogger(__name__)
 

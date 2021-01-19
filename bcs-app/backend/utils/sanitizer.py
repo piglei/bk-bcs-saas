@@ -28,7 +28,7 @@
 import copy
 
 from bleach.encoding import force_unicode
-from bleach.sanitizer import Cleaner, BleachSanitizerFilter
+from bleach.sanitizer import BleachSanitizerFilter, Cleaner
 
 allow_tags = [
     'a',

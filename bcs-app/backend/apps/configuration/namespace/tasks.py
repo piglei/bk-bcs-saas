@@ -11,19 +11,19 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import json
 import base64
+import json
 import logging
 
 from celery import shared_task
 
 from backend.accounts import bcs_perm
-from backend.components import paas_cc, paas_auth
 from backend.apps.configuration.namespace import resources
+from backend.apps.constants import ProjectKind
+from backend.components import paas_auth, paas_cc
+from backend.utils import FancyDict
 from backend.utils.errcodes import ErrorCode
 from backend.utils.error_codes import error_codes
-from backend.apps.constants import ProjectKind
-from backend.utils import FancyDict
 
 logger = logging.getLogger(__name__)
 

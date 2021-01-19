@@ -17,9 +17,9 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.authentication import BaseAuthentication
 
-from backend.utils import cache
-from backend.components.utils import http_get
 from backend.components import ssm
+from backend.components.utils import http_get
+from backend.utils import cache
 from backend.utils.authentication import NoAuthError
 
 logger = logging.getLogger(__name__)

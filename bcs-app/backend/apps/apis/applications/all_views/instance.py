@@ -12,19 +12,19 @@
 # specific language governing permissions and limitations under the License.
 #
 from django.http import JsonResponse
-from backend.apps.apis.applications import serializers
-
-from backend.apps.application import views as app_views
-from backend.apps.apis.base_views import BaseAPIViews, APIUser
-from backend.apps.apis.applications.views import BaseBatchHandleInstance
-from backend.components.bcs.mesos import MesosClient
-from backend.utils.errcodes import ErrorCode
-from backend.utils.error_codes import error_codes
 from rest_framework.response import Response
-from backend.utils.renderers import BKAPIRenderer
+
+from backend.apps.apis.applications import serializers
+from backend.apps.apis.applications.views import BaseBatchHandleInstance
+from backend.apps.apis.base_views import APIUser, BaseAPIViews
 from backend.apps.apis.utils import check_user_project
+from backend.apps.application import views as app_views
+from backend.components.bcs.mesos import MesosClient
 from backend.utils import FancyDict
 from backend.utils.basic import getitems
+from backend.utils.errcodes import ErrorCode
+from backend.utils.error_codes import error_codes
+from backend.utils.renderers import BKAPIRenderer
 
 DEFAULT_MSG_TYPE = "signal"
 

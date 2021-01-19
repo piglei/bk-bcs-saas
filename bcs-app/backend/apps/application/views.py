@@ -18,29 +18,28 @@ buildedInstance: 构建的数量(包含成功和失败Instance)
 instance: 用户希望构建的数量
 runningInstance: 构建成功的数量
 """
+import copy
 import json
 import logging
-import copy
 from datetime import datetime
 
 from django.utils.translation import ugettext_lazy as _
 
-from backend.apps.application.utils import APIResponse
-from backend.apps.configuration.models import Template, VersionedEntity, ShowVersion
-from backend.apps.instance.models import VersionInstance, InstanceConfig, InstanceEvent, MetricConfig
-from backend.utils.errcodes import ErrorCode
-from backend.apps.application.base_views import BaseAPI, error_codes, InstanceAPI
-from backend.apps.configuration.models import MODULE_DICT
+from backend.activity_log import client
 from backend.apps.application import constants as app_constants
 from backend.apps.application import utils
-from backend.activity_log import client
+from backend.apps.application.base_views import BaseAPI, InstanceAPI, error_codes
+from backend.apps.application.filters.base_metrics import BaseMusterMetric
+from backend.apps.application.other_views import k8s_views
+from backend.apps.application.utils import APIResponse
+from backend.apps.configuration.models import MODULE_DICT, ShowVersion, Template, VersionedEntity
+from backend.apps.datalog.utils import create_and_start_standard_data_flow, create_data_project
 from backend.apps.instance import utils as inst_utils
 from backend.apps.instance.constants import InsState
-from backend.apps.application.other_views import k8s_views
-from backend.apps.datalog.utils import create_data_project, create_and_start_standard_data_flow
-from backend.components.bcs import mesos
+from backend.apps.instance.models import InstanceConfig, InstanceEvent, MetricConfig, VersionInstance
 from backend.celery_app.tasks.application import update_create_error_record
-from backend.apps.application.filters.base_metrics import BaseMusterMetric
+from backend.components.bcs import mesos
+from backend.utils.errcodes import ErrorCode
 
 logger = logging.getLogger(__name__)
 

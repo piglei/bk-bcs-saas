@@ -12,11 +12,12 @@
 # specific language governing permissions and limitations under the License.
 #
 from urllib.parse import urlparse
+
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from django.conf import settings
 
-from .models.chart import Chart, ChartVersion, ChartRelease, ChartVersionSnapshot
+from .models.chart import Chart, ChartRelease, ChartVersion, ChartVersionSnapshot
 from .models.repo import Repository, RepositoryAuth
 
 

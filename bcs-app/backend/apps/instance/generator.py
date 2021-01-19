@@ -19,83 +19,81 @@ DONE:
 
 TODO：
 """
-import uuid
-import re
-import datetime
 import base64
-import logging
 import copy
+import datetime
 import json
+import logging
+import re
 import shlex
-from urllib.parse import urlparse
+import uuid
 from collections import OrderedDict
+from urllib.parse import urlparse
 
-from rest_framework.exceptions import ValidationError
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.exceptions import ValidationError
 
-from backend.components import paas_cc
-from backend.components.ticket import TicketClient
+from backend.apps.configuration.constants import NUM_VAR_PATTERN
 from backend.apps.configuration.models import (
+    CATE_SHOW_NAME,
     MODULE_DICT,
     VersionedEntity,
-    get_pod_qsets_by_tag,
     get_k8s_container_ports,
-    CATE_SHOW_NAME,
+    get_pod_qsets_by_tag,
     get_secret_name_by_certid,
 )
-from backend.apps.configuration.constants import NUM_VAR_PATTERN
-from backend.apps.instance.funutils import update_nested_dict, render_mako_context
-from backend.apps.instance.constants import (
-    APPLICATION_SYS_CONFIG,
-    DEPLPYMENT_SYS_CONFIG,
-    SEVICE_SYS_CONFIG,
-    CONFIGMAP_SYS_CONFIG,
-    SECRET_SYS_CONFIG,
-    LABEL_SERVICE_NAME,
-    SEVICE_WEIGHT_LABEL_PREFIX,
-    ANNOTATIONS_WEB_CACHE,
-    LOG_CONFIG_MAP_SUFFIX,
-    LOG_CONFIG_MAP_KEY_SUFFIX,
-    LOG_CONFIG_MAP_PATH_PRFIX,
-    LOG_CONFIG_MAP_APP_LABEL,
-    APPLICATION_ID_SEPARATOR,
-    LABLE_CONTAINER_SELECTOR_LABEL,
-    K8S_INGRESS_SYS_CONFIG,
-    K8S_LOG_ENV,
-    K8S_CUSTOM_LOG_ENV_KEY,
-    MESOS_CUSTOM_LOG_LABEL_KEY,
-    LABLE_METRIC_SELECTOR_LABEL,
-    API_VERSION,
-)
-from backend.apps.metric.models import Metric
 from backend.apps.constants import ClusterType
-from backend.apps.datalog.utils import get_data_id_by_project_id, create_and_start_non_standard_data_flow
+from backend.apps.datalog.utils import create_and_start_non_standard_data_flow, get_data_id_by_project_id
+from backend.apps.instance import constants as instance_constants
 from backend.apps.instance.constants import (
-    K8S_SECRET_SYS_CONFIG,
+    ANNOTATIONS_WEB_CACHE,
+    API_VERSION,
+    APPLICATION_ID_SEPARATOR,
+    APPLICATION_SYS_CONFIG,
+    CONFIGMAP_SYS_CONFIG,
+    DEPLPYMENT_SYS_CONFIG,
+    INGRESS_ID_SEPARATOR,
     K8S_CONFIGMAP_SYS_CONFIG,
-    K8S_SEVICE_SYS_CONFIG,
-    K8S_DEPLPYMENT_SYS_CONFIG,
+    K8S_CUSTOM_LOG_ENV_KEY,
     K8S_DAEMONSET_SYS_CONFIG,
-    K8S_JOB_SYS_CONFIG,
-    K8S_STATEFULSET_SYS_CONFIG,
-    K8S_RESOURCE_UNIT,
+    K8S_DEPLPYMENT_SYS_CONFIG,
     K8S_ENV_KEY,
     K8S_IMAGE_SECRET_PRFIX,
+    K8S_INGRESS_SYS_CONFIG,
+    K8S_JOB_SYS_CONFIG,
+    K8S_LOG_ENV,
+    K8S_MODULE_NAME,
+    K8S_RESOURCE_UNIT,
+    K8S_SECRET_SYS_CONFIG,
+    K8S_SEVICE_SYS_CONFIG,
+    K8S_STATEFULSET_SYS_CONFIG,
     LABEL_MONITOR_LEVEL,
     LABEL_MONITOR_LEVEL_DEFAULT,
+    LABEL_SERVICE_NAME,
+    LABLE_CONTAINER_SELECTOR_LABEL,
+    LABLE_METRIC_SELECTOR_LABEL,
+    LOG_CONFIG_MAP_APP_LABEL,
+    LOG_CONFIG_MAP_KEY_SUFFIX,
+    LOG_CONFIG_MAP_PATH_PRFIX,
+    LOG_CONFIG_MAP_SUFFIX,
+    MESOS_CUSTOM_LOG_LABEL_KEY,
     MESOS_IMAGE_SECRET,
-    INGRESS_ID_SEPARATOR,
     MESOS_MODULE_NAME,
-    K8S_MODULE_NAME,
+    SECRET_SYS_CONFIG,
+    SEVICE_SYS_CONFIG,
+    SEVICE_WEIGHT_LABEL_PREFIX,
 )
-from backend.utils.func_controller import get_func_controller
-from backend.apps.instance.utils_pub import get_cluster_version
-from backend.apps.ticket.models import TlsCert
+from backend.apps.instance.funutils import render_mako_context, update_nested_dict
 from backend.apps.instance.resources.utils import handle_number_var
-from backend.apps.instance import constants as instance_constants
-from backend.utils.basic import getitems
+from backend.apps.instance.utils_pub import get_cluster_version
+from backend.apps.metric.models import Metric
+from backend.apps.ticket.models import TlsCert
+from backend.components import paas_cc
+from backend.components.ticket import TicketClient
 from backend.resources.constants import K8sServiceTypes
+from backend.utils.basic import getitems
+from backend.utils.func_controller import get_func_controller
 
 logger = logging.getLogger(__name__)
 HANDLED_NUM_VAR_PATTERN = re.compile(r"%s}" % NUM_VAR_PATTERN)

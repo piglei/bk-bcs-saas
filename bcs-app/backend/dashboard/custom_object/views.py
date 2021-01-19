@@ -12,13 +12,13 @@
 # specific language governing permissions and limitations under the License.
 #
 from rest_framework import viewsets
-from rest_framework.response import Response
 from rest_framework.renderers import BrowsableAPIRenderer
+from rest_framework.response import Response
 
-from backend.utils.renderers import BKAPIRenderer
 from backend.resources.custom_object import CustomResourceDefinition, get_custom_object_api_by_crd
+from backend.utils.renderers import BKAPIRenderer
 
-from .serializers import PatchCustomObjectSLZ, PatchCustomObjectScaleSLZ
+from .serializers import PatchCustomObjectScaleSLZ, PatchCustomObjectSLZ
 from .utils import to_table_format
 
 

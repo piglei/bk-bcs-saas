@@ -12,23 +12,22 @@
 # specific language governing permissions and limitations under the License.
 #
 import logging
+from urllib.parse import ParseResult, urlparse
 
 import jinja2
 from django.conf import settings
-from urllib.parse import urlparse, ParseResult
 from rest_framework.exceptions import APIException
 
-from .constants import CURATOR_VALUES_TEMPLATE
-from ..models.repo import Repository, RepositoryAuth
-from ..models.chart import Chart, ChartVersion
-from ..utils.auth import BasicAuthGenerator
-from backend.utils.error_codes import error_codes
-
 from backend.bcs_k8s.app.models import App
-from .storage_provider import RGWProvider
 from backend.bcs_k8s.app.utils import compose_url_with_scheme
 from backend.bcs_k8s.helm.providers.constants import PUBLIC_REPO_URL
+from backend.utils.error_codes import error_codes
 
+from ..models.chart import Chart, ChartVersion
+from ..models.repo import Repository, RepositoryAuth
+from ..utils.auth import BasicAuthGenerator
+from .constants import CURATOR_VALUES_TEMPLATE
+from .storage_provider import RGWProvider
 
 logger = logging.getLogger(__name__)
 

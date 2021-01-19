@@ -15,9 +15,10 @@
 Usage: python manage.py init_latest_ver
 """
 import json
+
 from django.core.management.base import BaseCommand
 
-from backend.apps.configuration.models import ShowVersion, VersionedEntity, Template
+from backend.apps.configuration.models import ShowVersion, Template, VersionedEntity
 
 
 class Command(BaseCommand):

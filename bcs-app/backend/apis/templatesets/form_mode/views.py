@@ -16,16 +16,16 @@ import copy
 from rest_framework.response import Response
 
 from backend.apis import views
-from backend.apps.constants import ProjectKind
 from backend.apps.configuration.mixins import TemplatePermission
 from backend.apps.configuration.models import get_template_by_project_and_id
 from backend.apps.configuration.showversion.serializers import GetShowVersionSLZ
+from backend.apps.constants import ProjectKind
 from backend.apps.instance.models import VersionInstance
 from backend.utils.error_codes import error_codes
 
 from . import serializers
-from .release import ReleaseDataProcessor
 from .deployer import DeployController
+from .release import ReleaseDataProcessor
 
 
 class TemplateViewSet(views.BaseAPIViewSet, TemplatePermission):

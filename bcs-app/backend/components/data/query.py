@@ -15,13 +15,14 @@
 """
 数据平台查询相关API
 """
-import time
 import json
 import logging
+import time
 from enum import Enum
 
 from backend.components.utils import http_post
-from .constant import DATA_API_V3_PREFIX, APP_CODE, APP_SECRET, IS_DATA_OPEN
+
+from .constant import APP_CODE, APP_SECRET, DATA_API_V3_PREFIX, IS_DATA_OPEN
 
 logger = logging.getLogger(__name__)
 

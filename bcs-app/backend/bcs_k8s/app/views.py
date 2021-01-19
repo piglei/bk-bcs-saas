@@ -11,76 +11,81 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import os
-import json
 import base64
-import urllib
+import json
 import logging
-
-from operator import itemgetter
-from itertools import groupby
+import os
 import tempfile
-from django.utils import timezone
-from rest_framework.exceptions import ValidationError
+import urllib
+from itertools import groupby
+from operator import itemgetter
 
 import yaml
-from rest_framework import viewsets
-from rest_framework.serializers import Serializer
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import APIException
 from django.conf import settings
 from django.core.cache import cache
-from django.http import HttpResponse
 from django.db import IntegrityError
-from jinja2 import Template
+from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from jinja2 import Template
+from rest_framework import viewsets
+from rest_framework.exceptions import APIException, ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.serializers import Serializer
+
+from backend.accounts import bcs_perm
+from backend.bcs_k8s.app.serializers import FilterNamespacesSLZ
+from backend.bcs_k8s.app.utils import compose_url_with_scheme
+from backend.bcs_k8s.app.utils_bk import get_or_create_private_repo
+from backend.bcs_k8s.authtoken.authentication import TokenAuthentication
+from backend.bcs_k8s.bke_client.client import BCSClusterCredentialsNotFound, BCSClusterNotFound
+from backend.bcs_k8s.dashboard.exceptions import DashboardError, DashboardExecutionError
+from backend.bcs_k8s.diff import parser
+from backend.bcs_k8s.helm.models.chart import ChartVersion
+from backend.bcs_k8s.helm.models.repo import Repository
+from backend.bcs_k8s.helm.providers.repo_provider import add_plain_repo, add_platform_public_repos, add_repo
+from backend.bcs_k8s.helm.serializers import ChartVersionSLZ
+from backend.bcs_k8s.permissions import check_cluster_perm
+from backend.components import paas_cc
+from backend.components.bcs import k8s
+from backend.resources.namespace.constants import K8S_SYS_PLAT_NAMESPACES
+from backend.utils import client as bcs_utils_client
+from backend.utils.errcodes import ErrorCode
+from backend.utils.views import (
+    AccessTokenMixin,
+    ActionSerializerMixin,
+    AppMixin,
+    FilterByProjectMixin,
+    ProjectMixin,
+    with_code_wrapper,
+)
 
 from .models import App
 from .serializers import (
-    AppSLZ,
-    AppUpgradeSLZ,
-    AppRollbackSLZ,
-    NamespaceSLZ,
+    AppCreatePreviewDiffWithClusterSLZ,
+    AppCreatePreviewSLZ,
     AppDetailSLZ,
-    AppUpgradeVersionsSLZ,
-    AppRollbackSelectionsSLZ,
+    AppPreviewSLZ,
     AppReleaseDiffSLZ,
     AppReleasePreviewSLZ,
-    AppCreatePreviewSLZ,
     AppRollbackPreviewSLZ,
-    AppPreviewSLZ,
-    ClusterImportSLZ,
-    ClusterKubeConfigSLZ,
-    SyncDict2YamlToolSLZ,
-    SyncYaml2DictToolSLZ,
-    ClusterHelmInitSLZ,
-    AppCreatePreviewDiffWithClusterSLZ,
+    AppRollbackSelectionsSLZ,
+    AppRollbackSLZ,
+    AppSLZ,
     AppStateSLZ,
     AppUpgradeByAPISLZ,
+    AppUpgradeSLZ,
+    AppUpgradeVersionsSLZ,
+    ClusterHelmInitSLZ,
+    ClusterImportSLZ,
+    ClusterKubeConfigSLZ,
+    NamespaceSLZ,
+    SyncDict2YamlToolSLZ,
+    SyncYaml2DictToolSLZ,
 )
-from backend.bcs_k8s.helm.serializers import ChartVersionSLZ
-from backend.bcs_k8s.helm.models.chart import ChartVersion
-from backend.bcs_k8s.helm.models.repo import Repository
-from backend.bcs_k8s.diff import parser
-from backend.bcs_k8s.permissions import check_cluster_perm
-from backend.bcs_k8s.helm.providers.repo_provider import add_platform_public_repos, add_repo, add_plain_repo
-from backend.utils.views import ActionSerializerMixin, FilterByProjectMixin
-from backend.components import paas_cc
-from backend.utils.views import AccessTokenMixin, ProjectMixin, AppMixin, with_code_wrapper
-from backend.bcs_k8s.authtoken.authentication import TokenAuthentication
-from backend.utils import client as bcs_utils_client
-from backend.components.bcs import k8s
 from .utils import collect_resource_state, collect_resource_status, get_base_url, resource_link
-from backend.accounts import bcs_perm
-from backend.bcs_k8s.bke_client.client import BCSClusterNotFound, BCSClusterCredentialsNotFound
-from backend.bcs_k8s.dashboard.exceptions import DashboardError, DashboardExecutionError
-from backend.bcs_k8s.app.utils import compose_url_with_scheme
-from backend.utils.errcodes import ErrorCode
-from backend.bcs_k8s.app.serializers import FilterNamespacesSLZ
-from backend.bcs_k8s.app.utils_bk import get_or_create_private_repo
-from backend.resources.namespace.constants import K8S_SYS_PLAT_NAMESPACES
 
 logger = logging.getLogger(__name__)
 

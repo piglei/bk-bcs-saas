@@ -11,25 +11,22 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
+import re
+import tempfile
+from urllib.parse import urlparse
+
 import dpath
 import yaml
 import yaml.reader
-import re
-import tempfile
-
-from urllib.parse import urlparse
-from ruamel.yaml import YAML
-from ruamel.yaml.compat import StringIO
-from ruamel.yaml.compat import ordereddict
 from django.utils.translation import ugettext_lazy as _
-
-from backend.bcs_k8s.helm.utils.util import fix_rancher_value_by_type, EmptyVaue
-from backend.utils.client import make_dashboard_ctl_client
-from backend.bcs_k8s.diff import parser
+from ruamel.yaml import YAML
+from ruamel.yaml.compat import StringIO, ordereddict
 
 from backend.bcs_k8s.dashboard.exceptions import DashboardExecutionError
+from backend.bcs_k8s.diff import parser
+from backend.bcs_k8s.helm.utils.util import EmptyVaue, fix_rancher_value_by_type
 from backend.components import paas_cc
-
+from backend.utils.client import make_dashboard_ctl_client
 
 yaml.reader.Reader.NON_PRINTABLE = re.compile(
     '[^\x09\x0A\x0D\x20-\x7E\x85\xA0-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]'

@@ -15,7 +15,6 @@
 """
 from backend.utils.basic import ChoicesEnum
 
-
 # 不检查IP是否重复的业务
 SKIP_BIZ_INFO = {}
 

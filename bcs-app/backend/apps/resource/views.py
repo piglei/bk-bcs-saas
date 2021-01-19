@@ -17,58 +17,58 @@
 import base64
 import copy
 import datetime
-import re
-import logging
 import json
-from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
-from rest_framework import viewsets
+import logging
+import re
+
 from django.utils.translation import ugettext_lazy as _
+from rest_framework import viewsets
+from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
 
 from backend.accounts import bcs_perm
-from backend.utils.errcodes import ErrorCode
-from backend.utils.error_codes import error_codes
-from backend.apps.application.utils import APIResponse
-from backend.apps.application.base_views import BaseAPI
-from backend.apps.instance.models import InstanceConfig
-from backend.components import paas_cc
-from backend.components.bcs import k8s, mesos
-from backend.apps import constants
-from backend.apps.application.constants import DELETE_INSTANCE
 from backend.activity_log import client as activity_client
-from backend.apps.instance.generator import GENERATOR_DICT
-from backend.apps.instance.funutils import update_nested_dict, render_mako_context
-from backend.apps.instance.drivers import get_scheduler_driver
-from backend.apps.instance.constants import (
-    ANNOTATIONS_UPDATE_TIME,
-    ANNOTATIONS_UPDATOR,
-    K8S_CONFIGMAP_SYS_CONFIG,
-    CONFIGMAP_SYS_CONFIG,
-    SECRET_SYS_CONFIG,
-    K8S_SECRET_SYS_CONFIG,
-    LABLE_TEMPLATE_ID,
-    LABLE_INSTANCE_ID,
-    K8S_IMAGE_SECRET_PRFIX,
-    ANNOTATIONS_CREATOR,
-    SOURCE_TYPE_LABEL_KEY,
-    MESOS_IMAGE_SECRET,
-)
+from backend.apps import constants
+from backend.apps import utils as app_utils
+from backend.apps.application.base_views import BaseAPI
+from backend.apps.application.constants import DELETE_INSTANCE, SOURCE_TYPE_MAP
+from backend.apps.application.utils import APIResponse
+from backend.apps.configuration.constants import MesosResourceName
+from backend.apps.configuration.models import Template
 from backend.apps.configuration.serializers import (
     ConfigMapCreateOrUpdateSLZ,
-    SecretCreateOrUpdateSLZ,
     K8sConfigMapCreateOrUpdateSLZ,
     K8sSecretCreateOrUpdateSLZ,
+    SecretCreateOrUpdateSLZ,
 )
-from backend.apps.configuration.models import Template
-from backend.apps.network.serializers import BatchResourceSLZ
-from backend.apps.application.constants import SOURCE_TYPE_MAP
-from backend.utils.renderers import BKAPIRenderer
-from backend.utils.basic import getitems
-from backend.apps import utils as app_utils
 from backend.apps.constants import ProjectKind
 from backend.apps.instance import constants as inst_constants
-from backend.apps.configuration.constants import MesosResourceName
-from backend.resources.namespace.constants import K8S_SYS_NAMESPACE, K8S_PLAT_NAMESPACE
+from backend.apps.instance.constants import (
+    ANNOTATIONS_CREATOR,
+    ANNOTATIONS_UPDATE_TIME,
+    ANNOTATIONS_UPDATOR,
+    CONFIGMAP_SYS_CONFIG,
+    K8S_CONFIGMAP_SYS_CONFIG,
+    K8S_IMAGE_SECRET_PRFIX,
+    K8S_SECRET_SYS_CONFIG,
+    LABLE_INSTANCE_ID,
+    LABLE_TEMPLATE_ID,
+    MESOS_IMAGE_SECRET,
+    SECRET_SYS_CONFIG,
+    SOURCE_TYPE_LABEL_KEY,
+)
+from backend.apps.instance.drivers import get_scheduler_driver
+from backend.apps.instance.funutils import render_mako_context, update_nested_dict
+from backend.apps.instance.generator import GENERATOR_DICT
+from backend.apps.instance.models import InstanceConfig
+from backend.apps.network.serializers import BatchResourceSLZ
+from backend.components import paas_cc
+from backend.components.bcs import k8s, mesos
+from backend.resources.namespace.constants import K8S_PLAT_NAMESPACE, K8S_SYS_NAMESPACE
+from backend.utils.basic import getitems
+from backend.utils.errcodes import ErrorCode
+from backend.utils.error_codes import error_codes
+from backend.utils.renderers import BKAPIRenderer
 
 logger = logging.getLogger(__name__)
 DEFAULT_ERROR_CODE = ErrorCode.UnknownError

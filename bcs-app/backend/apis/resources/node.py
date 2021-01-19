@@ -13,9 +13,9 @@
 #
 from rest_framework.response import Response
 
-from backend.resources.cluster.utils import set_mesos_node_labels
-from backend.apis.views import NoAccessTokenBaseAPIViewSet
 from backend.apis.resources.serializers import CreateNodeLabelsSLZ
+from backend.apis.views import NoAccessTokenBaseAPIViewSet
+from backend.resources.cluster.utils import set_mesos_node_labels
 
 
 class NodeLabelsViewSet(NoAccessTokenBaseAPIViewSet):

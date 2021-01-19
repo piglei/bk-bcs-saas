@@ -17,12 +17,12 @@ import logging
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from backend.components import paas_cc
-from backend.components.bcs.mesos import MesosClient
-from backend.utils.error_codes import error_codes
-from backend.utils.errcodes import ErrorCode
 from backend.apps.depot.api import get_jfrog_account
 from backend.apps.instance.constants import MESOS_IMAGE_SECRET, OLD_MESOS_IMAGE_SECRET
+from backend.components import paas_cc
+from backend.components.bcs.mesos import MesosClient
+from backend.utils.errcodes import ErrorCode
+from backend.utils.error_codes import error_codes
 
 logger = logging.getLogger(__name__)
 

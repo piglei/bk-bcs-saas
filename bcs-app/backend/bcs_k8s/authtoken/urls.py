@@ -12,8 +12,8 @@
 # specific language governing permissions and limitations under the License.
 #
 from django.conf.urls import url
-from . import views
 
+from . import views
 
 urlpatterns = [
     url(r'^api/bcs/k8s/token/$', views.TokenView.as_view({'get': 'list', 'post': 'create'}), name='api.bcs_k8s.token'),

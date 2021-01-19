@@ -15,12 +15,13 @@
 凭证管理系统
 """
 
-import logging
 import json
+import logging
+
 from django.conf import settings
 
-from backend.components.utils import http_get
 from backend.apps.ticket.bkdh import shortcuts
+from backend.components.utils import http_get
 
 logger = logging.getLogger(__name__)
 

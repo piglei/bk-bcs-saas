@@ -11,14 +11,14 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import logging
 import json
+import logging
 
 from backend.apps.datalog.utils import get_data_id_by_project_id
-from backend.apps.variable.models import NameSpaceVariable, Variable, ClusterVariable
+from backend.apps.variable.constants import VariableScope
+from backend.apps.variable.models import ClusterVariable, NameSpaceVariable, Variable
 from backend.bcs_k8s.app.utils import yaml_dump, yaml_load
 from backend.components import paas_cc
-from backend.apps.variable.constants import VariableScope
 
 logger = logging.getLogger(__name__)
 

@@ -12,8 +12,8 @@
 # specific language governing permissions and limitations under the License.
 #
 from backend.components import cc
-from backend.utils.error_codes import error_codes
 from backend.utils.errcodes import ErrorCode
+from backend.utils.error_codes import error_codes
 
 
 class CMDBClient:

@@ -15,17 +15,17 @@ import copy
 import json
 import logging
 
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers, viewsets
 from rest_framework.exceptions import ValidationError
-from rest_framework.response import Response
 from rest_framework.renderers import BrowsableAPIRenderer
-from django.utils.translation import ugettext_lazy as _
+from rest_framework.response import Response
 
-from backend.utils.renderers import BKAPIRenderer
 from backend.activity_log import client as activity_client
-from backend.apps.network.views.lb import serializers as lb_slz
 from backend.apps.network.models import MesosLoadBlance as MesosLoadBalancer
 from backend.apps.network.views.lb import constants as mesos_lb_constants
+from backend.apps.network.views.lb import serializers as lb_slz
+from backend.utils.renderers import BKAPIRenderer
 
 from . import utils as lb_utils
 

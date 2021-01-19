@@ -13,8 +13,9 @@
 #
 import re
 
-from backend.utils.basic import ChoicesEnum
 from django.utils.translation import ugettext_lazy as _
+
+from backend.utils.basic import ChoicesEnum
 
 # 变量的格式
 VARIABLE_PATTERN = "[A-Za-z][A-Za-z0-9_]"

@@ -11,8 +11,9 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-from . import base, k8s, mesos
 from backend.apps.configuration.constants import RESOURCE_NAMES, K8sResourceName, MesosResourceName
+
+from . import base, k8s, mesos
 
 MODEL_CLASS_LIST = [
     k8s.K8sDeployment,

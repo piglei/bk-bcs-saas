@@ -13,9 +13,9 @@
 #
 from urllib.parse import urlparse
 
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError, PermissionDenied
 from django.utils.translation import ugettext_lazy as _
+from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from .models import Token, make_random_key
 

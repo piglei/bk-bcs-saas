@@ -14,10 +14,10 @@
 import re
 
 import arrow
-from kubernetes import client
 from django.utils import timezone
+from kubernetes import client
 
-from backend.utils.basic import normalize_datetime, getitems
+from backend.utils.basic import getitems, normalize_datetime
 
 
 class Resource:

@@ -15,25 +15,24 @@
 """
 import json
 import logging
-from itertools import groupby
 from datetime import datetime
+from itertools import groupby
 
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
+from backend.accounts import bcs_perm
+from backend.activity_log import client
+from backend.apps import constants
+from backend.apps.application import constants as app_constants
+from backend.apps.application.base_views import BaseAPI, error_codes
+from backend.apps.application.utils import APIResponse
+from backend.apps.configuration.models import MODULE_DICT, Template, VersionedEntity
+from backend.apps.configuration.utils import to_bcs_res_name
+from backend.apps.instance.constants import APPLICATION_ID_SEPARATOR, InsState
+from backend.apps.instance.models import InstanceConfig, MetricConfig, VersionInstance
 from backend.components import paas_cc
 from backend.utils.errcodes import ErrorCode
-from backend.apps.application.base_views import BaseAPI, error_codes
-from backend.apps.configuration.models import Template, VersionedEntity
-from backend.apps.configuration.utils import to_bcs_res_name
-from backend.apps.instance.models import VersionInstance, InstanceConfig, MetricConfig
-from backend.apps.application import constants as app_constants
-from backend.apps import constants
-from backend.apps.configuration.models import MODULE_DICT
-from backend.apps.application.utils import APIResponse
-from backend.activity_log import client
-from backend.apps.instance.constants import InsState, APPLICATION_ID_SEPARATOR
-from backend.accounts import bcs_perm
 
 logger = logging.getLogger(__name__)
 SKIP_CATEGORY = ["application", "deployment"]

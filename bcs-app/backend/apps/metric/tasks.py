@@ -11,18 +11,19 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
+import json
 import logging
 from itertools import groupby
-import json
 
 from celery import shared_task
-from backend.components import paas_cc
+
 from backend.apps.constants import MetricProjectKind
-from backend.utils.error_codes import error_codes
+from backend.apps.instance.constants import InsState
 from backend.apps.instance.models import MetricConfig
 from backend.apps.metric.models import Metric
+from backend.components import paas_cc
 from backend.components.bcs.mesos import MesosClient
-from backend.apps.instance.constants import InsState
+from backend.utils.error_codes import error_codes
 
 logger = logging.getLogger(__name__)
 

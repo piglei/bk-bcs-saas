@@ -17,12 +17,11 @@ import logging
 
 from django.utils.translation import ugettext_lazy as _
 
-from backend.components.bcs.k8s import K8SClient
 from backend.apps.instance.drivers.base import SchedulerBase
-from backend.utils.error_codes import error_codes
-
 from backend.components.bcs import mesos
-from backend.utils.exceptions import ComponentError, Rollback, ConfigError
+from backend.components.bcs.k8s import K8SClient
+from backend.utils.error_codes import error_codes
+from backend.utils.exceptions import ComponentError, ConfigError, Rollback
 
 logger = logging.getLogger(__name__)
 

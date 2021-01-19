@@ -15,7 +15,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from backend.utils.basic import ChoicesEnum
 
-
 # Application status
 """
 staging：资源不足等导致处于这个状态

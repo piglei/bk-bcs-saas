@@ -16,13 +16,14 @@ import json
 import logging
 import re
 
-import yaml
 import jsonschema
-from backend.utils.sanitizer import clean_html
+import yaml
 from Crypto.PublicKey import RSA
 from django.conf import settings
 from django.utils import timezone
 from rest_framework import fields, serializers
+
+from backend.utils.sanitizer import clean_html
 
 logger = logging.getLogger(__name__)
 

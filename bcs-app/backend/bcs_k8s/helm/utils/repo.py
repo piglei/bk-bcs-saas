@@ -15,18 +15,18 @@
 this is the functions for fetch content from repo
 """
 
+import base64
+import hashlib
 import io
+import logging
+import tarfile
 
 import requests
 import yaml
-import logging
-import hashlib
-import base64
-import tarfile
 
-from backend.utils.cache import rd_client
+from backend.bcs_k8s.helm.utils.repo_bk import get_charts_info, make_requests_auth
 from backend.components.utils import http_get
-from backend.bcs_k8s.helm.utils.repo_bk import make_requests_auth, get_charts_info
+from backend.utils.cache import rd_client
 
 logger = logging.getLogger(__name__)
 

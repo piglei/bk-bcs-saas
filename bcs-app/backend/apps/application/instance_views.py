@@ -11,40 +11,38 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import re
 import json
 import logging
+import re
 import time
 from datetime import datetime
 
-from django.db.models import Q
 from django.conf import settings
-from rest_framework.response import Response
-from rest_framework.renderers import BrowsableAPIRenderer
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.renderers import BrowsableAPIRenderer
+from rest_framework.response import Response
 
-from backend.components import paas_cc
-from backend.apps.application.utils import APIResponse, image_handler
-from backend.apps.configuration.models import VersionedEntity, ShowVersion
-from backend.apps.instance.models import VersionInstance, InstanceConfig, InstanceEvent
-from backend.apps.variable.models import Variable
-from backend.utils.errcodes import ErrorCode
-from backend.apps.application.base_views import BaseAPI, error_codes, InstanceAPI
-from backend.apps.configuration.models import MODULE_DICT
-from backend.apps.application import constants as app_constants
-from backend.components import data
-from backend.apps.application import utils
 from backend.activity_log import client
+from backend.apps.application import constants as app_constants
+from backend.apps.application import utils
+from backend.apps.application.base_views import BaseAPI, InstanceAPI, error_codes
+from backend.apps.application.serializers import BatchDeleteResourceSLZ
+from backend.apps.application.utils import APIResponse, image_handler
+from backend.apps.application.views import UpdateInstanceNew
+from backend.apps.configuration.models import MODULE_DICT, ShowVersion, VersionedEntity
+from backend.apps.configuration.utils import check_var_by_config
+from backend.apps.constants import ProjectKind
+from backend.apps.datalog import utils as datalog_utils
 from backend.apps.instance import utils as inst_utils
 from backend.apps.instance.constants import ANNOTATIONS_WEB_CACHE
+from backend.apps.instance.models import InstanceConfig, InstanceEvent, VersionInstance
 from backend.apps.metric.models import Metric
-from backend.apps.configuration.utils import check_var_by_config
-from backend.apps.application.views import UpdateInstanceNew
+from backend.apps.variable.models import Variable
+from backend.components import data, paas_cc
 from backend.utils.basic import getitems
-from backend.apps.datalog import utils as datalog_utils
+from backend.utils.errcodes import ErrorCode
 from backend.utils.renderers import BKAPIRenderer
-from backend.apps.constants import ProjectKind
-from backend.apps.application.serializers import BatchDeleteResourceSLZ
 
 logger = logging.getLogger(__name__)
 

@@ -11,22 +11,19 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import logging
 import json
+import logging
 
 from rest_framework import response, viewsets
 from rest_framework.renderers import BrowsableAPIRenderer
 
-from backend.utils.renderers import BKAPIRenderer
-from backend.apps.application import constants
-from backend.apps.application import utils
-from backend.apps.application import base_perm_views
+from backend.apps.application import base_perm_views, constants, drivers, utils
 from backend.apps.application.base_views import BaseInstanceView
-from backend.apps.application import drivers
-from backend.utils.basic import getitems
-from backend.web_console.api import exec_command
-from backend.utils.error_codes import error_codes
 from backend.apps.application.common_views import serializers as common_serializers
+from backend.utils.basic import getitems
+from backend.utils.error_codes import error_codes
+from backend.utils.renderers import BKAPIRenderer
+from backend.web_console.api import exec_command
 
 logger = logging.getLogger(__name__)
 

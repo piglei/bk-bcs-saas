@@ -15,10 +15,10 @@ import logging
 
 from backend.apps import constants
 from backend.apps.cluster import constants as cluster_constants
+from backend.apps.cluster.constants import K8S_SKIP_NS_LIST
 from backend.components.bcs.k8s import K8SClient
 from backend.utils.errcodes import ErrorCode
 from backend.utils.error_codes import error_codes
-from backend.apps.cluster.constants import K8S_SKIP_NS_LIST
 
 logger = logging.getLogger(__name__)
 

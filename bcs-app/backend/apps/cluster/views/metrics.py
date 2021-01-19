@@ -22,6 +22,7 @@ from rest_framework.renderers import BrowsableAPIRenderer
 
 from backend.accounts import bcs_perm
 from backend.apps import constants as app_constants
+from backend.apps.cluster import serializers
 from backend.apps.cluster import serializers as cluster_serializers
 from backend.apps.cluster.utils import use_prometheus_source
 from backend.apps.cluster.views.metric_handler import get_namespace_metric, get_node_metric
@@ -32,7 +33,6 @@ from backend.utils.errcodes import ErrorCode
 from backend.utils.error_codes import error_codes
 from backend.utils.funutils import num_transform
 from backend.utils.renderers import BKAPIRenderer
-from backend.apps.cluster import serializers
 
 logger = logging.getLogger(__name__)
 

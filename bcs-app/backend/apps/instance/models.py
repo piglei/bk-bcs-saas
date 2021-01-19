@@ -20,7 +20,7 @@ import logging
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from backend.apps.configuration.models import BaseModel, VersionedEntity, Template
+from backend.apps.configuration.models import BaseModel, Template, VersionedEntity
 from backend.apps.instance.constants import EventType, InsState
 
 logger = logging.getLogger(__name__)

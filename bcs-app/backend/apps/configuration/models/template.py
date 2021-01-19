@@ -19,15 +19,15 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.exceptions import ValidationError
 
-from backend.apps.metric.models import Metric
-from backend.apps.configuration import constants
 from backend.apps.application.constants import K8S_KIND, MESOS_KIND
-from backend.apps.instance.constants import LOG_CONFIG_MAP_SUFFIX, APPLICATION_ID_SEPARATOR, INGRESS_ID_SEPARATOR
+from backend.apps.configuration import constants
+from backend.apps.instance.constants import APPLICATION_ID_SEPARATOR, INGRESS_ID_SEPARATOR, LOG_CONFIG_MAP_SUFFIX
+from backend.apps.metric.models import Metric
 
-from .base import BaseModel, POD_RES_LIST, logger, get_default_version
-from .manager import TemplateManager, ShowVersionManager, VersionedEntityManager
-from .utils import get_model_class_by_resource_name, get_secret_name_by_certid, MODULE_DICT
 from . import k8s, mesos, resfile
+from .base import POD_RES_LIST, BaseModel, get_default_version, logger
+from .manager import ShowVersionManager, TemplateManager, VersionedEntityManager
+from .utils import MODULE_DICT, get_model_class_by_resource_name, get_secret_name_by_certid
 
 TemplateCategory = constants.TemplateCategory
 TemplateEditMode = constants.TemplateEditMode

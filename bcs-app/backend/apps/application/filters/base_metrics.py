@@ -12,12 +12,13 @@
 # specific language governing permissions and limitations under the License.
 #
 import json
+
 from django.utils.translation import ugettext_lazy as _
 
 from backend.apps.application.base_views import BaseAPI, error_codes
-from backend.apps.configuration.models import Template
-from backend.apps.instance.models import VersionInstance, InstanceConfig
 from backend.apps.application.constants import CATEGORY_MAP
+from backend.apps.configuration.models import Template
+from backend.apps.instance.models import InstanceConfig, VersionInstance
 
 CLUSTER_TYPE = [1, 2, "1", "2"]
 APP_STATUS = [1, 2, "1", "2"]

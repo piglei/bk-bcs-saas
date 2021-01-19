@@ -17,9 +17,9 @@ import shlex
 from urllib.parse import urlencode
 
 import arrow
+import tornado.gen
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _
-import tornado.gen
 from tornado.httpclient import HTTPRequest
 from tornado.ioloop import IOLoop
 from tornado.websocket import websocket_connect

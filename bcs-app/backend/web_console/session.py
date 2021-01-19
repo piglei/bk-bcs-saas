@@ -12,10 +12,10 @@
 # specific language governing permissions and limitations under the License.
 #
 import abc
+import copy
 import json
 import logging
 import uuid
-import copy
 
 from backend.utils.cache import rd_client
 

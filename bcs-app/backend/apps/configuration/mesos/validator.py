@@ -14,11 +14,12 @@
 import json
 import re
 
-from rest_framework.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.exceptions import ValidationError
 
 from backend.apps.configuration import models
 from backend.apps.configuration.constants import MesosResourceName
+
 from .constants import CONFIG_SCHEMA_MAP
 
 MESOS_NAME_REGEX = re.compile(r'^[a-z]{1}[a-z0-9-]{0,254}$')

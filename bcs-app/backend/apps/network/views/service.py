@@ -11,60 +11,59 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import datetime
 import copy
-import logging
+import datetime
 import json
+import logging
 
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from django.utils.translation import ugettext_lazy as _
 
 from backend.accounts import bcs_perm
-from backend.utils.errcodes import ErrorCode
-from backend.apps.application.utils import APIResponse
-from backend.apps.application.base_views import BaseAPI
-from backend.apps.configuration.models import Template, Application, VersionedEntity, Service, ShowVersion, K8sService
-from backend.components.bcs import k8s, mesos
+from backend.activity_log import client as activity_client
 from backend.apps import constants
-from backend.apps.network.utils_bk import get_svc_access_info, get_svc_extended_routes, delete_svc_extended_routes
+from backend.apps import utils as app_utils
+from backend.apps.application.base_views import BaseAPI
+from backend.apps.application.constants import DELETE_INSTANCE, SOURCE_TYPE_MAP
+from backend.apps.application.utils import APIResponse
+from backend.apps.configuration.constants import TemplateEditMode
+from backend.apps.configuration.models import Application, K8sService, Service, ShowVersion, Template, VersionedEntity
+from backend.apps.configuration.serializers import K8sServiceCreateOrUpdateSLZ, ServiceCreateOrUpdateSLZ
+from backend.apps.constants import ProjectKind
 from backend.apps.instance.constants import (
-    LABLE_TEMPLATE_ID,
-    LABLE_INSTANCE_ID,
-    SEVICE_SYS_CONFIG,
-    ANNOTATIONS_CREATOR,
-    ANNOTATIONS_UPDATOR,
     ANNOTATIONS_CREATE_TIME,
+    ANNOTATIONS_CREATOR,
     ANNOTATIONS_UPDATE_TIME,
+    ANNOTATIONS_UPDATOR,
     ANNOTATIONS_WEB_CACHE,
     K8S_SEVICE_SYS_CONFIG,
-    PUBLIC_LABELS,
+    LABLE_INSTANCE_ID,
+    LABLE_TEMPLATE_ID,
     PUBLIC_ANNOTATIONS,
+    PUBLIC_LABELS,
+    SEVICE_SYS_CONFIG,
     SOURCE_TYPE_LABEL_KEY,
 )
+from backend.apps.instance.drivers import get_scheduler_driver
+from backend.apps.instance.funutils import render_mako_context, update_nested_dict
 from backend.apps.instance.generator import (
-    handel_service_db_config,
-    handel_k8s_service_db_config,
     get_bcs_context,
+    handel_k8s_service_db_config,
+    handel_service_db_config,
+    handle_k8s_api_version,
     handle_webcache_config,
     remove_key,
-    handle_k8s_api_version,
 )
-from backend.apps.instance.utils_pub import get_cluster_version
-from backend.apps.configuration.serializers import ServiceCreateOrUpdateSLZ, K8sServiceCreateOrUpdateSLZ
-from backend.apps.instance.drivers import get_scheduler_driver
-from backend.apps.instance.funutils import update_nested_dict, render_mako_context
 from backend.apps.instance.models import InstanceConfig
-from backend.utils.exceptions import ComponentError
-from backend.activity_log import client as activity_client
-from backend.apps.application.constants import DELETE_INSTANCE
+from backend.apps.instance.utils_pub import get_cluster_version
 from backend.apps.network.serializers import BatchResourceSLZ
-from backend.apps.application.constants import SOURCE_TYPE_MAP
-from backend.apps import utils as app_utils
-from backend.apps.constants import ProjectKind
-from backend.apps.configuration.constants import TemplateEditMode
-from backend.resources.namespace.constants import K8S_SYS_NAMESPACE, K8S_PLAT_NAMESPACE
+from backend.apps.network.utils_bk import delete_svc_extended_routes, get_svc_access_info, get_svc_extended_routes
+from backend.components.bcs import k8s, mesos
+from backend.resources.namespace.constants import K8S_PLAT_NAMESPACE, K8S_SYS_NAMESPACE
+from backend.utils.errcodes import ErrorCode
+from backend.utils.exceptions import ComponentError
 
 logger = logging.getLogger(__name__)
 DEFAULT_ERROR_CODE = ErrorCode.UnknownError

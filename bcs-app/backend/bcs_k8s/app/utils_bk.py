@@ -13,8 +13,8 @@
 #
 from django.conf import settings
 
-from backend.bcs_k8s.helm.models.repo import Repository
 from backend.apps.depot.api import get_jfrog_account
+from backend.bcs_k8s.helm.models.repo import Repository
 from backend.bcs_k8s.helm.providers.repo_provider import add_plain_repo
 
 

@@ -11,28 +11,34 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
+import copy
 import json
 import logging
-import copy
 from datetime import datetime
 
 from django.utils.translation import ugettext_lazy as _
 
-from backend.apps.instance.models import VersionInstance, InstanceConfig, InstanceEvent, MetricConfig
-from backend.apps.application.constants import CATEGORY_MAP, SOURCE_TYPE_MAP
-from backend.apps.application import utils
-from backend.apps.instance.constants import InsState
-from backend.apps.application.constants import REVERSE_CATEGORY_MAP, FUNC_MAP, DELETE_INSTANCE, UNNORMAL_STATUS
-from backend.components.bcs.k8s import K8SClient
-from backend.components import paas_cc
-from backend.utils.error_codes import error_codes
-from backend.utils.errcodes import ErrorCode
-from backend.apps.configuration.models import Template
-from backend.celery_app.tasks.application import update_create_error_record
-from backend.utils.basic import getitems
-from backend.apps.hpa.utils import get_deployment_hpa
 from backend.apps.application import constants as app_constants
+from backend.apps.application import utils
+from backend.apps.application.constants import (
+    CATEGORY_MAP,
+    DELETE_INSTANCE,
+    FUNC_MAP,
+    REVERSE_CATEGORY_MAP,
+    SOURCE_TYPE_MAP,
+    UNNORMAL_STATUS,
+)
 from backend.apps.application.utils import get_instance_version, get_instance_version_name, retry_requests
+from backend.apps.configuration.models import Template
+from backend.apps.hpa.utils import get_deployment_hpa
+from backend.apps.instance.constants import InsState
+from backend.apps.instance.models import InstanceConfig, InstanceEvent, MetricConfig, VersionInstance
+from backend.celery_app.tasks.application import update_create_error_record
+from backend.components import paas_cc
+from backend.components.bcs.k8s import K8SClient
+from backend.utils.basic import getitems
+from backend.utils.errcodes import ErrorCode
+from backend.utils.error_codes import error_codes
 
 logger = logging.getLogger(__name__)
 

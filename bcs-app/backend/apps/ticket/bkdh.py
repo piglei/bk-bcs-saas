@@ -14,13 +14,13 @@
 """python3版本
 """
 
-import requests
-
 from base64 import b64decode, b64encode
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
+
+import requests
 from Crypto.Cipher import DES
 from Crypto.Hash import SHA
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
 
 
 class BKDHException(Exception):

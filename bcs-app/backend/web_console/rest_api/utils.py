@@ -20,9 +20,9 @@ from django.conf import settings
 from django.utils.encoding import smart_bytes
 
 from backend.activity_log import client as activity_client
+from backend.utils.func_controller import get_func_controller
 from backend.web_console.bcs_client import k8s
 from backend.web_console.constants import WebConsoleMode
-from backend.utils.func_controller import get_func_controller
 
 DNS_ALLOW_CHARS = string.ascii_lowercase + string.digits + "-"
 

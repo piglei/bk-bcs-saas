@@ -12,9 +12,9 @@
 # specific language governing permissions and limitations under the License.
 #
 """Module for generating kubeconfig file"""
+import contextlib
 import logging
 import tempfile
-import contextlib
 from dataclasses import dataclass
 from typing import List
 

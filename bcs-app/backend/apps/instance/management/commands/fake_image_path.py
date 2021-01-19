@@ -18,7 +18,7 @@ Usage: python manage.py fake_image_path
 
 from django.core.management.base import BaseCommand
 
-from backend.apps.configuration.models import Application, VersionedEntity, Template
+from backend.apps.configuration.models import Application, Template, VersionedEntity
 
 
 class Command(BaseCommand):

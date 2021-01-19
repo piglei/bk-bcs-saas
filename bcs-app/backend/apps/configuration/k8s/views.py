@@ -31,17 +31,17 @@ TODO:
 """
 import json
 
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.renderers import BrowsableAPIRenderer
 from django.utils.translation import ugettext_lazy as _
+from rest_framework import viewsets
+from rest_framework.renderers import BrowsableAPIRenderer
+from rest_framework.response import Response
 
-from backend.utils.error_codes import error_codes
-from backend.utils.renderers import BKAPIRenderer
 from backend.apps.application.constants import K8S_KIND
-from backend.apps.configuration.models import K8sService, get_pod_qsets_by_tag, get_k8s_container_ports, K8sStatefulSet
 from backend.apps.configuration.constants import K8sResourceName
 from backend.apps.configuration.mixins import GetVersionedEntity
+from backend.apps.configuration.models import K8sService, K8sStatefulSet, get_k8s_container_ports, get_pod_qsets_by_tag
+from backend.utils.error_codes import error_codes
+from backend.utils.renderers import BKAPIRenderer
 
 
 class TemplateResourceView(viewsets.ViewSet, GetVersionedEntity):

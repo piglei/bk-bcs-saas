@@ -15,6 +15,7 @@
 Usage: python manage.py init_version
 """
 import json
+
 from django.core.management.base import BaseCommand
 
 from backend.apps.configuration.models import ShowVersion, VersionedEntity

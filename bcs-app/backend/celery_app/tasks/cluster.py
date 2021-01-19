@@ -12,26 +12,25 @@
 # specific language governing permissions and limitations under the License.
 #
 
+import json
+import logging
 import re
 import time
-import logging
-import json
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
+from celery import shared_task
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from celery import shared_task
-
-from backend.utils.errcodes import ErrorCode
-from backend.apps.cluster import models
-from backend.components import jobs, paas_cc, cc, so
 from backend.apps import constants
-from backend.components.bcs.bcs_common_api import BCSClient
-from backend.components.bcs import k8s, mesos
+from backend.apps.cluster import models
 from backend.apps.configuration.utils_ns import register_default_ns
-from backend.utils.client import get_bcs_client
 from backend.bcs_k8s.app.views import helm_init
+from backend.components import cc, jobs, paas_cc, so
+from backend.components.bcs import k8s, mesos
+from backend.components.bcs.bcs_common_api import BCSClient
+from backend.utils.client import get_bcs_client
+from backend.utils.errcodes import ErrorCode
 from backend.utils.send_msg import send_message
 
 logger = logging.getLogger(__name__)

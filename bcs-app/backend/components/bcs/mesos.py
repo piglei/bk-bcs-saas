@@ -20,7 +20,6 @@ from backend.utils.decorators import handle_api_not_implemented, parse_response_
 from backend.utils.errcodes import ErrorCode
 from backend.utils.error_codes import error_codes
 
-
 STORAGE_PREFIX = "{apigw_host}/v4/storage"
 SCHEDULER_PREFIX = "{apigw_host}/v4/scheduler"
 METRIC_PREFIX = "{apigw_host}/v4/metric"

@@ -12,8 +12,8 @@
 # specific language governing permissions and limitations under the License.
 #
 import copy
-import logging
 import json
+import logging
 
 import dpath
 

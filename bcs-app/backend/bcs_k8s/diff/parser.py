@@ -13,8 +13,8 @@
 #
 import logging
 import re
-import yaml
 
+import yaml
 
 """
 a resource parser which extract resource from raw text,

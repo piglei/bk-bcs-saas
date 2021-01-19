@@ -13,19 +13,19 @@
 #
 import json
 
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.renderers import BrowsableAPIRenderer
 from django.utils.translation import ugettext_lazy as _
+from rest_framework import viewsets
+from rest_framework.renderers import BrowsableAPIRenderer
+from rest_framework.response import Response
 
-from backend.utils.error_codes import error_codes
 from backend.apps.application.constants import MESOS_KIND
-from backend.utils.renderers import BKAPIRenderer
-from backend.apps.network.utils import get_lb_status
-from backend.apps.network.models import MesosLoadBlance
 from backend.apps.configuration import models
-from backend.apps.configuration.mixins import GetVersionedEntity
 from backend.apps.configuration.constants import MesosResourceName
+from backend.apps.configuration.mixins import GetVersionedEntity
+from backend.apps.network.models import MesosLoadBlance
+from backend.apps.network.utils import get_lb_status
+from backend.utils.error_codes import error_codes
+from backend.utils.renderers import BKAPIRenderer
 
 
 class ApplicationView(viewsets.ViewSet, GetVersionedEntity):

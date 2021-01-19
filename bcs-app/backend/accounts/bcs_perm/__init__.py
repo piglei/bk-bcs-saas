@@ -18,8 +18,8 @@ import abc
 
 from django.utils.translation import ugettext_lazy as _
 
-from backend.components.ssm import get_client_access_token
 from backend.components.enterprise.bk_login import get_all_users
+from backend.components.ssm import get_client_access_token
 
 # 与资源无关
 NO_RES = "**"

@@ -26,40 +26,39 @@ TODO:
 - 实例化失败，再次实例化时，应该更新而不是创建数据
 - mesos/k8s 创建分开调用底层API
 """
-import logging
 import json
+import logging
 
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import viewsets
-from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.renderers import BrowsableAPIRenderer
-from django.utils.translation import ugettext_lazy as _
+from rest_framework.response import Response
 
-from backend.apps.instance.constants import InsState
 from backend.accounts import bcs_perm
-from backend.apps.configuration.models import CATE_SHOW_NAME
-from backend.apps.instance.models import VersionInstance, InstanceConfig
-from backend.apps.instance.utils import validate_template_id
+from backend.activity_log import client
+from backend.apps.application.base_views import error_codes
+from backend.apps.configuration.constants import K8sResourceName, MesosResourceName
+from backend.apps.configuration.models import CATE_SHOW_NAME, MODULE_DICT
+from backend.apps.configuration.tasks import check_instance_status
+from backend.apps.datalog.utils import create_and_start_standard_data_flow, create_data_project
+from backend.apps.instance.constants import InsState
+from backend.apps.instance.models import InstanceConfig, VersionInstance
 from backend.apps.instance.serializers import (
-    VersionInstanceCreateOrUpdateSLZ,
-    PreviewInstanceSLZ,
     InstanceNamespaceSLZ,
+    PreviewInstanceSLZ,
+    VersionInstanceCreateOrUpdateSLZ,
 )
 from backend.apps.instance.utils import (
-    validate_version_id,
-    preview_config_json,
     handle_all_config,
-    validate_ns_by_tempalte_id,
-    validate_lb_info_by_version_id,
+    preview_config_json,
     validate_instance_entity,
+    validate_lb_info_by_version_id,
+    validate_ns_by_tempalte_id,
+    validate_template_id,
+    validate_version_id,
 )
-from backend.activity_log import client
-from backend.apps.datalog.utils import create_data_project, create_and_start_standard_data_flow
-from backend.apps.configuration.models import MODULE_DICT
-from backend.apps.application.base_views import error_codes
-from backend.apps.configuration.tasks import check_instance_status
 from backend.utils.renderers import BKAPIRenderer
-from backend.apps.configuration.constants import K8sResourceName, MesosResourceName
 
 logger = logging.getLogger(__name__)
 

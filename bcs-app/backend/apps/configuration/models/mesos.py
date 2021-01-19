@@ -11,15 +11,16 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import time
 import json
+import time
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from .mixins import MConfigMapAndSecretMixin, PodMixin, ResourceMixin
-from .base import BaseModel, logger
 from backend.utils.basic import getitems
+
+from .base import BaseModel, logger
+from .mixins import MConfigMapAndSecretMixin, PodMixin, ResourceMixin
 
 
 class MesosResource(BaseModel):

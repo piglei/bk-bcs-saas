@@ -14,8 +14,8 @@
 from typing import Optional
 
 from ..resource import ResourceClient
-from .format import CustomObjectFormatter
 from .crd import CustomResourceDefinition
+from .format import CustomObjectFormatter
 
 
 class CustomObject(ResourceClient):

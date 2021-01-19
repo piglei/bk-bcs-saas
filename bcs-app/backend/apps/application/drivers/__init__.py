@@ -12,8 +12,10 @@
 # specific language governing permissions and limitations under the License.
 #
 
+from backend.components.bcs import k8s as bcs_k8s
+from backend.components.bcs import mesos as bcs_mesos
+
 from . import k8s, mesos
-from backend.components.bcs import k8s as bcs_k8s, mesos as bcs_mesos
 
 
 class BCSDriver:

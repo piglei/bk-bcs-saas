@@ -14,13 +14,12 @@
 import logging
 
 from django.conf import settings
-from rest_framework import views, response
-from rest_framework import viewsets
+from rest_framework import response, views, viewsets
 
-from backend.utils.views import FinalizeResponseMixin
-from backend.utils.funutils import convert_mappings
-from backend.apps.depot.serializers import ImageQuerySLZ, AvailableTagSLZ, ImageDetailSLZ
 from backend.apps.depot import api
+from backend.apps.depot.serializers import AvailableTagSLZ, ImageDetailSLZ, ImageQuerySLZ
+from backend.utils.funutils import convert_mappings
+from backend.utils.views import FinalizeResponseMixin
 
 logger = logging.getLogger(__name__)
 

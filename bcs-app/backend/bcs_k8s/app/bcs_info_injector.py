@@ -15,10 +15,11 @@ import logging
 
 from rest_framework.exceptions import ParseError
 
-from .bcs_info_provider import BcsInfoProvider
-from backend.bcs_k8s.injectors import InjectManager
 from backend.bcs_k8s.diff.parser import split_manifest
-from .utils import yaml_load, yaml_dump
+from backend.bcs_k8s.injectors import InjectManager
+
+from .bcs_info_provider import BcsInfoProvider
+from .utils import yaml_dump, yaml_load
 
 yaml_seperator = b"\n---\n"
 logger = logging.getLogger(__name__)

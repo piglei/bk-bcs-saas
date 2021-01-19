@@ -14,14 +14,14 @@
 import json
 
 from rest_framework import viewsets
-from rest_framework.response import Response
 from rest_framework.renderers import BrowsableAPIRenderer
+from rest_framework.response import Response
 
+from backend.apps.cluster.views.utils import get_areas
 from backend.components import paas_cc
 from backend.utils.errcodes import ErrorCode
 from backend.utils.error_codes import error_codes
 from backend.utils.renderers import BKAPIRenderer
-from backend.apps.cluster.views.utils import get_areas
 
 
 class AreaListViewSet(viewsets.ViewSet):

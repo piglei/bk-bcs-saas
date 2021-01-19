@@ -12,11 +12,11 @@
 # specific language governing permissions and limitations under the License.
 #
 from django.conf.urls import url
+
 from .views import service
-from .views.lb import k8s
-from .views.ingress import mesos as mesos_ingress
 from .views.charts import versions
-from .views.lb import mesos_new
+from .views.ingress import mesos as mesos_ingress
+from .views.lb import k8s, mesos_new
 
 MESOS_CLUSTER_ID_REGEX = "BCS-((?!K8S)\w)+-[0-9]{5,7}"
 

@@ -19,16 +19,15 @@ import copy
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+from backend.accounts import bcs_perm
 from backend.apps.application.all_views import k8s_views, mesos_views
 from backend.apps.application.base_views import BaseAPI, error_codes
-from backend.apps.application.utils import APIResponse
+from backend.apps.application.constants import CATEGORY_MAP
+from backend.apps.application.filters.base_metrics import BaseNamespaceMetric
+from backend.apps.application.utils import APIResponse, cluster_env
+from backend.apps.instance.models import InstanceConfig
 from backend.components import paas_cc
 from backend.utils.errcodes import ErrorCode
-from backend.apps.application.constants import CATEGORY_MAP
-from backend.accounts import bcs_perm
-from backend.apps.instance.models import InstanceConfig
-from backend.apps.application.utils import cluster_env
-from backend.apps.application.filters.base_metrics import BaseNamespaceMetric
 
 CLUSTER_ENV_MAP = settings.CLUSTER_ENV_FOR_FRONT
 

@@ -14,13 +14,12 @@ from unittest import mock
 
 import pytest
 
-from backend.utils.basic import getitems
+from backend.resources.constants import PatchType
 from backend.resources.custom_object.crd import CustomResourceDefinition
 from backend.resources.custom_object.custom_object import get_custom_object_api_by_crd
-from backend.resources.constants import PatchType
+from backend.utils.basic import getitems
 
 from ..conftest import FakeBcsKubeConfigurationService
-
 
 # https://github.com/kubernetes/sample-controller
 sample_crd = {

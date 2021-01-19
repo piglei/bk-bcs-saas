@@ -18,15 +18,15 @@ from functools import wraps
 from urllib import parse
 
 import six
+from django.conf import settings
 from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
 from requests.models import Response
-from django.conf import settings
 
 from backend.apps.constants import SENSITIVE_KEYWORD
-from backend.utils.exceptions import ComponentError, APIError
-from backend.utils.error_codes import error_codes
 from backend.utils.errcodes import ErrorCode
+from backend.utils.error_codes import error_codes
+from backend.utils.exceptions import APIError, ComponentError
 
 logger = logging.getLogger(__name__)
 

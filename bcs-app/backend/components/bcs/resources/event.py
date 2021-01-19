@@ -11,13 +11,13 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-import re
-
 import json
 import logging
+import re
 
-from .resource import Resource, CoreAPIClassMixins
 from backend.utils.basic import getitems
+
+from .resource import CoreAPIClassMixins, Resource
 
 logger = logging.getLogger(__name__)
 

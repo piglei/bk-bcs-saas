@@ -16,10 +16,10 @@
 """
 from django.utils.translation import ugettext_lazy as _
 
+from backend.accounts import bcs_perm
+from backend.apps.configuration.namespace.views import NamespaceBase
 from backend.components import paas_cc
 from backend.components.bcs.k8s import K8SClient
-from backend.apps.configuration.namespace.views import NamespaceBase
-from backend.accounts import bcs_perm
 from backend.utils.basic import RequestClass
 
 

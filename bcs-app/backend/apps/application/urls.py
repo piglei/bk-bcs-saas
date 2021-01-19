@@ -13,12 +13,14 @@
 #
 
 from django.conf.urls import url
-from . import views
-from . import instance_views
-from backend.apps.application.other_views import templates
+
 from backend.apps.application.all_views import views as ns_views
+from backend.apps.application.common_views import operation
+from backend.apps.application.common_views import query as common_query
 from backend.apps.application.filters import views as filter_views
-from backend.apps.application.common_views import query as common_query, operation
+from backend.apps.application.other_views import templates
+
+from . import instance_views, views
 
 urlpatterns = [
     url(

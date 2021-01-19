@@ -26,6 +26,7 @@ from backend.utils.error_codes import error_codes
 from backend.utils.renderers import BKAPIRenderer
 from backend.utils.response import BKAPIResponse
 from backend.utils.views import FinalizeResponseMixin
+
 from . import manager
 
 logger = logging.getLogger(__name__)

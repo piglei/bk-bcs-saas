@@ -15,8 +15,8 @@ import json
 
 from django.utils.translation import ugettext_lazy as _
 
-from .constants import VariableScope, VariableCategory
-from .models import Variable, NameSpaceVariable, ClusterVariable
+from .constants import VariableCategory, VariableScope
+from .models import ClusterVariable, NameSpaceVariable, Variable
 
 
 def _import_var(username, project_id, var):

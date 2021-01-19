@@ -13,13 +13,12 @@
 #
 from django.conf import settings
 
-from backend.components import paas_cc, paas_auth
+from backend.apps.apis.constants import PAAS_CD_APIGW_PUBLIC_KEY, PROJECT_KIND_MAP
+from backend.components import paas_auth, paas_cc
+from backend.utils.authentication import JWTClient
 from backend.utils.errcodes import ErrorCode
 from backend.utils.error_codes import error_codes
-from backend.apps.apis.constants import PROJECT_KIND_MAP, PAAS_CD_APIGW_PUBLIC_KEY
-from backend.utils.authentication import JWTClient
 from backend.utils.func_controller import get_func_controller
-
 
 DEFAULT_APP_CODE = "workbench"
 APP_CODE_SKIP_AUTH_WHITE_LIST = "APP_CODE_SKIP_AUTH"

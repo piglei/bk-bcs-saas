@@ -19,18 +19,19 @@ import logging
 import re
 from collections import Counter
 
-from rest_framework.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.exceptions import ValidationError
 
-from .constants import RESOURCE_NAMES
+from backend.accounts import bcs_perm
+from backend.activity_log import client
 from backend.apps.configuration.constants import NUM_VAR_ERROR_MSG, VARIABLE_PATTERN, TemplateEditMode
-from backend.apps.configuration.serializers_new import TemplateSLZ, CreateTemplateSLZ
 from backend.apps.configuration.models import CATE_SHOW_NAME, MODULE_DICT, ShowVersion, Template, VersionedEntity
+from backend.apps.configuration.serializers_new import CreateTemplateSLZ, TemplateSLZ
 from backend.apps.constants import ProjectKind
 from backend.utils import cache
 from backend.utils.exceptions import ResNotFoundError
-from backend.accounts import bcs_perm
-from backend.activity_log import client
+
+from .constants import RESOURCE_NAMES
 
 logger = logging.getLogger(__name__)
 

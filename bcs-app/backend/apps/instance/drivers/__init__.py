@@ -11,10 +11,10 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-from backend.components import paas_cc
 from backend.apps.constants import ProjectKind
+from backend.apps.instance.drivers import k8s, mesos
+from backend.components import paas_cc
 from backend.utils.error_codes import error_codes
-from backend.apps.instance.drivers import mesos, k8s
 
 ClusterType = dict(ProjectKind._choices_labels.get_choices())
 

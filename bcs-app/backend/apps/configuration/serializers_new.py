@@ -15,16 +15,17 @@ import json
 import logging
 
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 
-from .constants import RESOURCE_NAMES, MesosResourceName
-from backend.utils.exceptions import ResNotFoundError
 from backend.apps.configuration import models
 from backend.apps.configuration.constants import TemplateEditMode
 from backend.apps.configuration.k8s import serializers as kserializers
 from backend.apps.configuration.mesos import serializers as mserializers
+from backend.utils.exceptions import ResNotFoundError
+
+from .constants import RESOURCE_NAMES, MesosResourceName
 
 SLZ_CLASS = [
     kserializers.K8sDeploymentSLZ,

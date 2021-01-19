@@ -16,21 +16,21 @@ import logging
 
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from rest_framework import viewsets, permissions
-from rest_framework.views import APIView
+from rest_framework import permissions, viewsets
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from backend.activity_log import client
+from backend.apps.projects.utils import get_app_by_user_role, get_application_name, update_bcs_service_for_project
 from backend.components import paas_cc
 from backend.components.iam.permissions import ProjectPermission
+from backend.resources import project as Project
+from backend.utils.basic import normalize_datetime
+from backend.utils.cache import region
 from backend.utils.errcodes import ErrorCode
 from backend.utils.error_codes import error_codes
 from backend.utils.renderers import BKAPIRenderer
-from backend.utils.cache import region
-from backend.apps.projects.utils import update_bcs_service_for_project, get_app_by_user_role, get_application_name
-from backend.utils.basic import normalize_datetime
-from backend.resources import project as Project
 
 from . import serializers
 

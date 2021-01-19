@@ -14,20 +14,21 @@
 import re
 
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 
-from backend.apps.configuration.validator import validate_variable_inconfig, validate_res_config
-from backend.apps.configuration.k8s.serializers import BCSResourceSLZ
 from backend.apps.configuration.constants import MesosResourceName
+from backend.apps.configuration.k8s.serializers import BCSResourceSLZ
+from backend.apps.configuration.validator import validate_res_config, validate_variable_inconfig
+
 from .validator import (
     MESOS_NAME_REGEX,
     get_config_schema,
-    validate_mesos_res_name,
     validate_app_in_ventity,
-    validate_res_duplicate,
+    validate_mesos_res_name,
     validate_port_duplicate_in_ventity,
+    validate_res_duplicate,
 )
 
 NAME_REGEX = re.compile(r'^[a-z]{1}[a-z0-9-]{0,254}$')

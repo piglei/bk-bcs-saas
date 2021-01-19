@@ -13,8 +13,8 @@
 #
 import json
 
-from backend.utils.client import KubectlClient
 from backend.activity_log import client
+from backend.utils.client import KubectlClient
 
 
 class DeployController:

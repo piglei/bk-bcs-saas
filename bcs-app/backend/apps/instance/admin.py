@@ -12,7 +12,8 @@
 # specific language governing permissions and limitations under the License.
 #
 from django.contrib import admin
-from .models import VersionInstance, InstanceConfig, MetricConfig, InstanceEvent
+
+from .models import InstanceConfig, InstanceEvent, MetricConfig, VersionInstance
 
 
 class VersionInstanceAdmin(admin.ModelAdmin):

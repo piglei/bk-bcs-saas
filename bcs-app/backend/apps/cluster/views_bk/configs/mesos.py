@@ -14,16 +14,16 @@
 """
 MESOS 获取相关配置
 """
+import base64
 import json
 import time
-import base64
 
 from django.utils.translation import ugettext_lazy as _
 
+from backend.apps.cluster.models import CommonStatus
 from backend.components import paas_cc
 from backend.utils.errcodes import ErrorCode
 from backend.utils.error_codes import error_codes
-from backend.apps.cluster.models import CommonStatus
 
 
 class BaseConfig(object):
